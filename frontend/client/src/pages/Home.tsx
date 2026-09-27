@@ -130,53 +130,84 @@ function Entry({onEnter}:{onEnter:()=>void}) {
     return () => clearInterval(timer);
   }, []);
 
-  return <div className="sr-entry">
-  <div className="sr-entry-copy"><Logo/><div className="relative z-[1] max-w-xl"><div className="sr-kicker mb-5">PS ID 4 · HACKCELESTIAL 3.0</div><h1 className="font-serif text-[clamp(44px,6vw,82px)] font-medium leading-[.96] tracking-[-.055em] text-[#f2ede2]">From resort data<br/><span className="text-[#8fd6c2]">to intelligent action.</span></h1><p className="sr-muted mt-7 max-w-md text-[15px] leading-7">An intelligent operating layer connecting resort operations, guest experience and revenue intelligence.</p><button className="sr-button mt-9 min-h-12 px-6" onClick={onEnter}>Enter platform <ArrowRight size={16}/></button></div><div className="relative z-[1] flex items-center gap-3 text-[10px] uppercase tracking-[.14em] text-[#718b86]"><span className="h-2 w-2 rounded-full bg-[#8fd6c2]"/> Sense <span>→</span> Predict <span>→</span> Recommend <span>→</span> Act</div></div>
-  <div className="sr-entry-art relative overflow-hidden group bg-[#0e1a19]">
-    {RESORT_HERO_IMAGES.map((hero, idx) => {
-      const isCurrent = idx === imgIndex;
-      const isPrevious = idx === prevIndex && prevIndex !== imgIndex;
-      const isVisible = isCurrent || isPrevious;
+  return <div className="sr-entry relative overflow-hidden">
+    {/* Full-bleed background slideshow image across the entire Entry screen */}
+    <div className="absolute inset-0 z-0 overflow-hidden bg-[#0a1515]">
+      {RESORT_HERO_IMAGES.map((hero, idx) => {
+        const isCurrent = idx === imgIndex;
+        const isPrevious = idx === prevIndex && prevIndex !== imgIndex;
+        const isVisible = isCurrent || isPrevious;
 
-      return (
-        <img
-          key={hero.url}
-          src={hero.url}
-          onError={(e) => {
-            const target = e.currentTarget;
-            if (!target.src.includes("resort-hero.jpg") && target.src !== resortFallback) {
-              target.src = resortFallback;
-            } else {
-              target.src = resortWebFallback;
-            }
-          }}
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{
-            filter: "saturate(.85) contrast(.98)",
-            opacity: isCurrent ? 1 : isPrevious ? 1 : 0,
-            zIndex: isCurrent ? 20 : isPrevious ? 10 : 0,
-            transition: isCurrent
-              ? "opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1)"
-              : "opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1)",
-            transform: "translateZ(0)",
-            willChange: isVisible ? "opacity" : "auto",
-            pointerEvents: "none"
-          }}
-          alt={hero.title}
-        />
-      );
-    })}
-    <div className="sr-entry-card z-30 relative backdrop-blur-md">
-      <div className="flex items-center justify-between"><StatusChip>Live environment</StatusChip><span className="sr-dim font-mono text-[10px]">v0.9.4</span></div>
-      <p key={activeHero.title} className="mt-5 font-serif text-xl leading-tight text-[#f3ede2] animate-in fade-in duration-500">{activeHero.title}</p>
-      <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-4">
-        <div><div className="sr-label">Occupancy</div><div className="mt-1 text-sm font-semibold">87.4%</div></div>
-        <div><div className="sr-label">Guest pulse</div><div className="mt-1 text-sm font-semibold">4.8 <span className="text-[#e9bc73]">★</span></div></div>
-        <div><div className="sr-label">Open tasks</div><div className="mt-1 text-sm font-semibold">12</div></div>
+        return (
+          <img
+            key={hero.url}
+            src={hero.url}
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.src.includes("resort-hero.jpg") && target.src !== resortFallback) {
+                target.src = resortFallback;
+              } else {
+                target.src = resortWebFallback;
+              }
+            }}
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{
+              filter: "saturate(.95) contrast(1.02) brightness(.92)",
+              opacity: isCurrent ? 1 : isPrevious ? 1 : 0,
+              zIndex: isCurrent ? 2 : isPrevious ? 1 : 0,
+              transition: "opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1)",
+              transform: "translateZ(0)",
+              willChange: isVisible ? "opacity" : "auto",
+              pointerEvents: "none"
+            }}
+            alt={hero.title}
+          />
+        );
+      })}
+      {/* Subtle global ambient depth overlay */}
+      <div className="absolute inset-0 z-[3] bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
+    </div>
+
+    {/* Left Translucent Panel */}
+    <div className="sr-entry-copy relative z-10">
+      <Logo/>
+      <div className="relative z-[1] max-w-xl">
+        <div className="sr-kicker mb-5">PS ID 4 · HACKCELESTIAL 3.0</div>
+        <h1 className="font-serif text-[clamp(44px,6vw,82px)] font-medium leading-[.96] tracking-[-.055em] text-[#f2ede2] drop-shadow-sm">
+          From resort data<br/>
+          <span className="text-[#8fd6c2]">to intelligent action.</span>
+        </h1>
+        <p className="sr-muted mt-7 max-w-md text-[15px] leading-7 text-[#d7e4e1]">
+          An intelligent operating layer connecting resort operations, guest experience and revenue intelligence.
+        </p>
+        <button className="sr-button mt-9 min-h-12 px-6 shadow-xl" onClick={onEnter}>
+          Enter platform <ArrowRight size={16}/>
+        </button>
+      </div>
+      <div className="relative z-[1] flex items-center gap-3 text-[10px] uppercase tracking-[.14em] text-[#8fa8a3]">
+        <span className="h-2 w-2 rounded-full bg-[#8fd6c2] shadow-[0_0_8px_#8fd6c2]"/> Sense <span>→</span> Predict <span>→</span> Recommend <span>→</span> Act
       </div>
     </div>
-  </div>
-</div>; }
+
+    {/* Right Art / Card Area */}
+    <div className="sr-entry-art relative z-10">
+      <div className="sr-entry-card z-30 relative backdrop-blur-md">
+        <div className="flex items-center justify-between">
+          <StatusChip>Live environment</StatusChip>
+          <span className="sr-dim font-mono text-[10px]">v0.9.4</span>
+        </div>
+        <p key={activeHero.title} className="mt-5 font-serif text-xl leading-tight text-[#f3ede2] animate-in fade-in duration-500">
+          {activeHero.title}
+        </p>
+        <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-4">
+          <div><div className="sr-label">Occupancy</div><div className="mt-1 text-sm font-semibold">87.4%</div></div>
+          <div><div className="sr-label">Guest pulse</div><div className="mt-1 text-sm font-semibold">4.8 <span className="text-[#e9bc73]">★</span></div></div>
+          <div><div className="sr-label">Open tasks</div><div className="mt-1 text-sm font-semibold">12</div></div>
+        </div>
+      </div>
+    </div>
+  </div>;
+}
 
 function Auth({onLogin}:{onLogin:(role:Role)=>void}) {
   const [role,setRole]=useState<Role>("manager");
