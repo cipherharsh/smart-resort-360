@@ -1,9 +1,12 @@
 ﻿{
-  "name": "smart-resort-360",
+  "name": "smart-resort-360-root",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
-    "build": "cd frontend && npm install && npm run build && cd .. && node copy-dist.js",
-    "dev": "cd frontend && npm run dev"
+    "build": "npm run build --workspace=frontend",
+    "dev": "npm run dev --workspace=frontend"
   }
 }
