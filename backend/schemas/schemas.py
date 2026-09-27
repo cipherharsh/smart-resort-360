@@ -43,6 +43,17 @@ class ManagerVerifyOTPRequest(BaseModel):
     role: Optional[str] = "MANAGER"
 
 
+class StaffOTPRequest(BaseModel):
+    email: EmailStr
+    full_name: Optional[str] = "Engineering Staff"
+    department: Optional[str] = "Maintenance"
+
+
+class StaffVerifyOTPRequest(BaseModel):
+    email: EmailStr
+    otp: str = Field(..., min_length=4, max_length=6)
+
+
 class StaffLoginRequest(BaseModel):
     email: EmailStr
     password: Optional[str] = None

@@ -248,6 +248,18 @@ export const api = {
       body: JSON.stringify({ email, otp }),
     }),
 
+  requestStaffOTP: (email: string, full_name?: string, department?: string) =>
+    request<{ status: string; message: string; role: string; department?: string; dev_otp?: string; email_dispatched: boolean }>(
+      "/api/auth/staff-otp",
+      { method: "POST", body: JSON.stringify({ email, full_name, department }) }
+    ),
+
+  verifyStaffOTP: (email: string, otp: string) =>
+    request<UserToken>("/api/auth/staff-verify", {
+      method: "POST",
+      body: JSON.stringify({ email, otp }),
+    }),
+
   loginStaff: (email: string, password?: string, pin?: string) =>
     request<UserToken>("/api/auth/staff-login", {
       method: "POST",

@@ -10,6 +10,8 @@ from schemas.schemas import (
     GuestVerifyOTPRequest,
     ManagerOTPRequest,
     ManagerVerifyOTPRequest,
+    StaffOTPRequest,
+    StaffVerifyOTPRequest,
     StaffLoginRequest,
     Token,
     TokenData,
@@ -231,8 +233,106 @@ def guest_verify_otp(payload: GuestVerifyOTPRequest, db: Session = Depends(get_d
 
 
 # ==========================================
-# STAFF AUTHENTICATION
+# STAFF DYNAMIC OTP AUTHENTICATION
 # ==========================================
+
+@router.post("/staff-otp", summary="Request 4-digit OTP for Staff Workspace")
+def staff_request_otp(payload: StaffOTPRequest, db: Session = Depends(get_db)):
+    """
+    Sends a 4-digit OTP code to the Staff's email address.
+    If the staff account does not exist yet, creates the account automatically.
+    """
+    clean_email = payload.email.lower().strip()
+    employee = db.query(Employee).filter(Employee.email == clean_email).first()
+
+    if not employee:
+        employee = Employee(
+            full_name=payload.full_name or "Engineering Staff",
+            role="STAFF",
+            department=payload.department or "Maintenance",
+            email=clean_email,
+            auth_hash=get_password_hash("staff123"),
+            is_active=True,
+        )
+        db.add(employee)
+        db.commit()
+        db.refresh(employee)
+
+    otp = generate_otp()
+    employee.current_otp = otp
+    employee.otp_expires_at = datetime.utcnow() + timedelta(minutes=10)
+    db.commit()
+
+    # Dispatch via Gmail SMTP
+    sent = send_otp_email(to_email=employee.email, user_name=employee.full_name, otp=otp, role="STAFF")
+
+    return {
+        "status": "success",
+        "message": f"Verification OTP sent to {clean_email}",
+        "role": "STAFF",
+        "full_name": employee.full_name,
+        "department": employee.department,
+        "expires_in_minutes": 10,
+        "dev_otp": otp,  # Included for immediate friction-free testing
+        "email_dispatched": sent,
+    }
+
+
+@router.post("/staff-verify", response_model=Token, summary="Verify Staff OTP and Return JWT")
+def staff_verify_otp(payload: StaffVerifyOTPRequest, db: Session = Depends(get_db)):
+    """Validates Staff OTP and returns a Staff-scoped JWT token."""
+    clean_email = payload.email.lower().strip()
+    employee = db.query(Employee).filter(Employee.email == clean_email).first()
+
+    if not employee:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Staff profile not found",
+        )
+
+    if not employee.current_otp or not employee.otp_expires_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No active OTP request found. Please click 'Send OTP' first.",
+        )
+
+    if datetime.utcnow() > employee.otp_expires_at:
+        employee.current_otp = None
+        db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="OTP has expired. Please request a new one.",
+        )
+
+    if employee.current_otp != payload.otp.strip():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid OTP code provided. Please check your inbox or server logs.",
+        )
+
+    # Clear OTP on successful authentication
+    employee.current_otp = None
+    employee.otp_expires_at = None
+    db.commit()
+
+    access_token = create_access_token(
+        data={
+            "user_id": employee.employee_id,
+            "email": employee.email,
+            "role": "STAFF",
+            "department": employee.department,
+            "full_name": employee.full_name,
+        }
+    )
+
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+        role="STAFF",
+        user_id=employee.employee_id,
+        email=employee.email,
+    )
+
 
 @router.post("/staff-login", response_model=Token, summary="Authenticate Resort Staff")
 def staff_login(payload: StaffLoginRequest, db: Session = Depends(get_db)):
