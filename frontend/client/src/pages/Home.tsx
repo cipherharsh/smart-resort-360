@@ -152,7 +152,7 @@ function Entry({onEnter}:{onEnter:()=>void}) {
             }}
             className="absolute inset-0 h-full w-full object-cover"
             style={{
-              filter: "saturate(.95) contrast(1.02) brightness(.92)",
+              filter: "saturate(1.02) contrast(1.02) brightness(0.96)",
               opacity: isCurrent ? 1 : isPrevious ? 1 : 0,
               zIndex: isCurrent ? 2 : isPrevious ? 1 : 0,
               transition: "opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1)",
@@ -165,26 +165,26 @@ function Entry({onEnter}:{onEnter:()=>void}) {
         );
       })}
       {/* Subtle global ambient depth overlay */}
-      <div className="absolute inset-0 z-[3] bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
+      <div className="absolute inset-0 z-[3] bg-gradient-to-t from-black/35 via-transparent to-black/15 pointer-events-none" />
     </div>
 
     {/* Left Translucent Panel */}
     <div className="sr-entry-copy relative z-10">
       <Logo/>
       <div className="relative z-[1] max-w-xl">
-        <div className="sr-kicker mb-5">PS ID 4 · HACKCELESTIAL 3.0</div>
-        <h1 className="font-serif text-[clamp(44px,6vw,82px)] font-medium leading-[.96] tracking-[-.055em] text-[#f2ede2] drop-shadow-sm">
+        <div className="sr-kicker mb-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">PS ID 4 · HACKCELESTIAL 3.0</div>
+        <h1 className="font-serif text-[clamp(44px,6vw,82px)] font-medium leading-[.96] tracking-[-.055em] text-[#ffffff] drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)]">
           From resort data<br/>
-          <span className="text-[#8fd6c2]">to intelligent action.</span>
+          <span className="text-[#8fd6c2] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">to intelligent action.</span>
         </h1>
-        <p className="sr-muted mt-7 max-w-md text-[15px] leading-7 text-[#d7e4e1]">
+        <p className="mt-7 max-w-md text-[15px] leading-7 text-[#f0f5f4] font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
           An intelligent operating layer connecting resort operations, guest experience and revenue intelligence.
         </p>
-        <button className="sr-button mt-9 min-h-12 px-6 shadow-xl" onClick={onEnter}>
+        <button className="sr-button mt-9 min-h-12 px-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)]" onClick={onEnter}>
           Enter platform <ArrowRight size={16}/>
         </button>
       </div>
-      <div className="relative z-[1] flex items-center gap-3 text-[10px] uppercase tracking-[.14em] text-[#8fa8a3]">
+      <div className="relative z-[1] flex items-center gap-3 text-[10px] uppercase tracking-[.14em] text-[#d6e5e2] font-semibold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
         <span className="h-2 w-2 rounded-full bg-[#8fd6c2] shadow-[0_0_8px_#8fd6c2]"/> Sense <span>→</span> Predict <span>→</span> Recommend <span>→</span> Act
       </div>
     </div>
