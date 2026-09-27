@@ -209,23 +209,9 @@ function Entry({onEnter}:{onEnter:()=>void}) {
           <StatusChip tone="teal"><span className="text-xs font-bold text-white tracking-wide">Live environment</span></StatusChip>
           <span className="font-mono text-xs font-bold text-white/90 drop-shadow">v0.9.4</span>
         </div>
-        <p key={activeHero.title} className="mt-5 font-serif text-[23px] leading-tight text-white font-semibold drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] animate-in fade-in duration-500">
+        <p key={activeHero.title} className="mt-4 font-serif text-[23px] leading-tight text-white font-semibold drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] animate-in fade-in duration-500">
           {activeHero.title}
         </p>
-        <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/20 pt-4">
-          <div>
-            <div className="text-[12px] font-bold uppercase tracking-wider text-[#a0dfd0] drop-shadow">Occupancy</div>
-            <div className="mt-1 text-lg font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">87.4%</div>
-          </div>
-          <div>
-            <div className="text-[12px] font-bold uppercase tracking-wider text-[#a0dfd0] drop-shadow">Guest pulse</div>
-            <div className="mt-1 text-lg font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">4.8 <span className="text-[#e9bc73]">★</span></div>
-          </div>
-          <div>
-            <div className="text-[12px] font-bold uppercase tracking-wider text-[#a0dfd0] drop-shadow">Open tasks</div>
-            <div className="mt-1 text-lg font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">12</div>
-          </div>
-        </div>
       </div>
     </div>
   </div>;
