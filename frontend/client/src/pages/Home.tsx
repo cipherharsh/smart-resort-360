@@ -115,14 +115,18 @@ function Entry({onEnter}:{onEnter:()=>void}) {
     // Generate a random initial index on page load
     return Math.floor(Math.random() * RESORT_HERO_IMAGES.length);
   });
+  const [prevIndex, setPrevIndex] = useState<number>(imgIndex);
 
   const activeHero = RESORT_HERO_IMAGES[imgIndex];
 
-  // Automatically cycle to the next hero image every 2.5 seconds
+  // Automatically cycle to the next hero image every 2.8 seconds with silky smooth crossfade
   useEffect(() => {
     const timer = setInterval(() => {
-      setImgIndex((prev) => (prev + 1) % RESORT_HERO_IMAGES.length);
-    }, 2500);
+      setImgIndex((current) => {
+        setPrevIndex(current);
+        return (current + 1) % RESORT_HERO_IMAGES.length;
+      });
+    }, 2800);
     return () => clearInterval(timer);
   }, []);
 
@@ -130,7 +134,10 @@ function Entry({onEnter}:{onEnter:()=>void}) {
   <div className="sr-entry-copy"><Logo/><div className="relative z-[1] max-w-xl"><div className="sr-kicker mb-5">PS ID 4 · HACKCELESTIAL 3.0</div><h1 className="font-serif text-[clamp(44px,6vw,82px)] font-medium leading-[.96] tracking-[-.055em] text-[#f2ede2]">From resort data<br/><span className="text-[#8fd6c2]">to intelligent action.</span></h1><p className="sr-muted mt-7 max-w-md text-[15px] leading-7">An intelligent operating layer connecting resort operations, guest experience and revenue intelligence.</p><button className="sr-button mt-9 min-h-12 px-6" onClick={onEnter}>Enter platform <ArrowRight size={16}/></button></div><div className="relative z-[1] flex items-center gap-3 text-[10px] uppercase tracking-[.14em] text-[#718b86]"><span className="h-2 w-2 rounded-full bg-[#8fd6c2]"/> Sense <span>→</span> Predict <span>→</span> Recommend <span>→</span> Act</div></div>
   <div className="sr-entry-art relative overflow-hidden group bg-[#0e1a19]">
     {RESORT_HERO_IMAGES.map((hero, idx) => {
-      const isActive = idx === imgIndex;
+      const isCurrent = idx === imgIndex;
+      const isPrevious = idx === prevIndex && prevIndex !== imgIndex;
+      const isVisible = isCurrent || isPrevious;
+
       return (
         <img
           key={hero.url}
@@ -143,20 +150,25 @@ function Entry({onEnter}:{onEnter:()=>void}) {
               target.src = resortWebFallback;
             }
           }}
-          className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-in-out ${
-            isActive ? "opacity-100 scale-100 z-10" : "opacity-0 scale-105 z-0 pointer-events-none"
-          }`}
+          className="absolute inset-0 h-full w-full object-cover"
           style={{
             filter: "saturate(.85) contrast(.98)",
-            willChange: "opacity, transform"
+            opacity: isCurrent ? 1 : isPrevious ? 1 : 0,
+            zIndex: isCurrent ? 20 : isPrevious ? 10 : 0,
+            transition: isCurrent
+              ? "opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1)"
+              : "opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1)",
+            transform: "translateZ(0)",
+            willChange: isVisible ? "opacity" : "auto",
+            pointerEvents: "none"
           }}
           alt={hero.title}
         />
       );
     })}
-    <div className="sr-entry-card z-20 relative">
+    <div className="sr-entry-card z-30 relative backdrop-blur-md">
       <div className="flex items-center justify-between"><StatusChip>Live environment</StatusChip><span className="sr-dim font-mono text-[10px]">v0.9.4</span></div>
-      <p className="mt-5 font-serif text-xl leading-tight text-[#f3ede2] transition-opacity duration-500">{activeHero.title}</p>
+      <p key={activeHero.title} className="mt-5 font-serif text-xl leading-tight text-[#f3ede2] animate-in fade-in duration-500">{activeHero.title}</p>
       <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-4">
         <div><div className="sr-label">Occupancy</div><div className="mt-1 text-sm font-semibold">87.4%</div></div>
         <div><div className="sr-label">Guest pulse</div><div className="mt-1 text-sm font-semibold">4.8 <span className="text-[#e9bc73]">★</span></div></div>
