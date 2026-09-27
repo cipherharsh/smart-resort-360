@@ -118,11 +118,11 @@ function Entry({onEnter}:{onEnter:()=>void}) {
 
   const activeHero = RESORT_HERO_IMAGES[imgIndex];
 
-  // Automatically cycle to the next hero image every 4.5 seconds
+  // Automatically cycle to the next hero image every 2.5 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setImgIndex((prev) => (prev + 1) % RESORT_HERO_IMAGES.length);
-    }, 4500);
+    }, 2500);
     return () => clearInterval(timer);
   }, []);
 
@@ -143,7 +143,7 @@ function Entry({onEnter}:{onEnter:()=>void}) {
               target.src = resortWebFallback;
             }
           }}
-          className={`absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-in-out ${
+          className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-in-out ${
             isActive ? "opacity-100 scale-100 z-10" : "opacity-0 scale-105 z-0 pointer-events-none"
           }`}
           style={{
