@@ -5,7 +5,7 @@ import {
   Coffee, Command, ConciergeBell, Cpu, CreditCard, DoorOpen, Download, Droplets, Gauge, GitBranch, Home as HomeIcon, Hotel,
   KeyRound, Layers3, LifeBuoy, ListFilter, LogOut, MapPin, Menu, MessageCircle, MoreHorizontal, Navigation,
   PackageCheck, PanelLeft, Pause, Phone, Play, Plus, Radio, Network, Receipt, RefreshCw, Search, Send, Settings, ShieldAlert, Sparkles,
-  Sun, Target, Thermometer, TicketCheck, Timer, TrendingUp, UserRound, Users, Utensils, Wine, Wind, Wrench, X, Zap
+  Sun, Target, Thermometer, TicketCheck, Timer, TrendingUp, Trophy, UserRound, Users, Utensils, Wine, Wind, Wrench, X, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, setAuthToken, ResortStats, BackendHealth } from "../lib/api";
@@ -2266,49 +2266,147 @@ function TableReservationModal({
   onConfirm: (reservation: TableReservation) => void;
   onCancelReservation?: (venueId: string) => void;
 }) {
-  const [guests, setGuests] = useState<number>(existingReservation ? existingReservation.guests : 2);
-  const [timeSlot, setTimeSlot] = useState<string>(existingReservation ? existingReservation.timeSlot : "20:30 (Prime Royal Dinner)");
-  const [seatingArea, setSeatingArea] = useState<string>(existingReservation ? existingReservation.seatingArea : "Oceanfront Terrace");
-  const [occasion, setOccasion] = useState<string>(existingReservation?.occasion || "Casual Dining");
+  const isSports = item.gameType === "Indoor Games" || item.gameType === "Outdoor Games" || item.category === "Sports" || item.category === "Activity" || item.id === "snooker-1" || item.id === "pool-1" || item.id === "carrom-1" || item.id === "cricket-1" || item.id === "badminton-1" || item.id === "golf-1";
+  const isWellness = item.gameType === "Wellness" || item.category === "Wellness" || item.id === "spa-1" || item.id === "yoga-1" || item.id === "pool-resort-1";
+  const isBar = item.subCategory === "Bar" || item.category === "Bar" || item.id === "bar-1";
+
+  const defaultTime = isSports
+    ? "14:00 (Afternoon Practice Game)"
+    : isWellness
+    ? "16:00 (Sunset Soundbath & Spa)"
+    : "20:30 (Prime Royal Dinner)";
+
+  const defaultArea = isSports
+    ? "Tournament Match Setup"
+    : isWellness
+    ? "Lotus Ayurvedic Suite"
+    : "Oceanfront Terrace";
+
+  const defaultOccasion = isSports
+    ? "Friendly Casual Match"
+    : isWellness
+    ? "🌿 Deep Relaxation Ritual"
+    : "Casual Dining";
+
+  const [guests, setGuests] = useState<number>(existingReservation ? existingReservation.guests : (isSports ? 2 : isWellness ? 1 : 2));
+  const [timeSlot, setTimeSlot] = useState<string>(existingReservation ? existingReservation.timeSlot : defaultTime);
+  const [seatingArea, setSeatingArea] = useState<string>(existingReservation ? existingReservation.seatingArea : defaultArea);
+  const [occasion, setOccasion] = useState<string>(existingReservation?.occasion || defaultOccasion);
   const [specialRequests, setSpecialRequests] = useState<string>(existingReservation?.specialRequests || "");
 
-  const guestOptions = [
-    { count: 1, label: "1 Guest", sub: "Solo Dining" },
-    { count: 2, label: "2 Guests", sub: "Couples / Date" },
-    { count: 3, label: "3 Guests", sub: "Small Group" },
-    { count: 4, label: "4 Guests", sub: "Family Table" },
-    { count: 6, label: "5-6 Guests", sub: "Group Dining" },
-    { count: 8, label: "8+ Guests", sub: "Grand Private" },
-  ];
+  const guestOptions = isSports
+    ? [
+        { count: 1, label: "1 Player", sub: "Solo Practice / Drill" },
+        { count: 2, label: "2 Players", sub: "1 vs 1 Singles Match" },
+        { count: 3, label: "3 Players", sub: "3-Player Game / Rotation" },
+        { count: 4, label: "4 Players", sub: "Doubles / 2 vs 2 Match" },
+        { count: 6, label: "5-6 Players", sub: "Team Practice / Group" },
+        { count: 8, label: "8+ Players", sub: "Full Team / Tournament" },
+      ]
+    : isWellness
+    ? [
+        { count: 1, label: "1 Guest", sub: "Private Sanctuary" },
+        { count: 2, label: "2 Guests", sub: "Couples Ritual" },
+        { count: 3, label: "3 Guests", sub: "Small Group Spa" },
+        { count: 4, label: "4 Guests", sub: "Family Wellness" },
+        { count: 6, label: "5-6 Guests", sub: "Group Soundbath" },
+        { count: 8, label: "8+ Guests", sub: "Private Wing Soak" },
+      ]
+    : [
+        { count: 1, label: "1 Guest", sub: "Solo Dining" },
+        { count: 2, label: "2 Guests", sub: "Couples / Date" },
+        { count: 3, label: "3 Guests", sub: "Small Group" },
+        { count: 4, label: "4 Guests", sub: "Family Table" },
+        { count: 6, label: "5-6 Guests", sub: "Group Dining" },
+        { count: 8, label: "8+ Guests", sub: "Grand Private" },
+      ];
 
-  const timeSlots = [
-    { time: "12:30", label: "Lunch Service", period: "Afternoon" },
-    { time: "14:00", label: "Late Lunch", period: "Afternoon" },
-    { time: "16:30", label: "Sunset Tea & Tapas", period: "Evening" },
-    { time: "18:30", label: "Sundowner Cocktails", period: "Evening" },
-    { time: "19:30", label: "Candlelight Dinner", period: "Dinner" },
-    { time: "20:30", label: "Prime Royal Dinner", period: "Dinner" },
-    { time: "21:30", label: "Twilight Feast", period: "Night" },
-    { time: "22:30", label: "Late Lounge & Bar", period: "Late Night" }
-  ];
+  const timeSlots = isSports
+    ? [
+        { time: "07:00", label: "Morning Practice Session", period: "Morning Fresh Air" },
+        { time: "09:00", label: "Morning Prime Match", period: "High Energy" },
+        { time: "11:00", label: "Midday Arena Game", period: "Pre-Lunch Play" },
+        { time: "14:00", label: "Afternoon Practice Game", period: "Club Session" },
+        { time: "16:00", label: "Sundowner Match", period: "Cool Ocean Breeze" },
+        { time: "18:00", label: "Floodlit Evening Arena", period: "Prime Evening Slot" },
+        { time: "20:00", label: "Night Lights Match", period: "Tournament Session" },
+        { time: "22:00", label: "Late Night Game", period: "Casual Friendly" }
+      ]
+    : isWellness
+    ? [
+        { time: "08:00", label: "Sunrise Awakening", period: "Morning Fresh" },
+        { time: "10:30", label: "Morning Rejuvenation", period: "Morning Prime" },
+        { time: "12:30", label: "Midday Hydro-Soak", period: "Afternoon" },
+        { time: "15:00", label: "Deep Tissue Therapy", period: "Afternoon" },
+        { time: "16:00", label: "Sunset Soundbath & Spa", period: "Sunset Glow" },
+        { time: "18:00", label: "Twilight Relaxation", period: "Evening" },
+        { time: "19:30", label: "Herbal Detox Steam", period: "Night" },
+        { time: "21:00", label: "Moonlight Sleep Ritual", period: "Late Night" }
+      ]
+    : [
+        { time: "12:30", label: "Lunch Service", period: "Afternoon" },
+        { time: "14:00", label: "Late Lunch", period: "Afternoon" },
+        { time: "16:30", label: "Sunset Tea & Tapas", period: "Evening" },
+        { time: "18:30", label: "Sundowner Cocktails", period: "Evening" },
+        { time: "19:30", label: "Candlelight Dinner", period: "Dinner" },
+        { time: "20:30", label: "Prime Royal Dinner", period: "Dinner" },
+        { time: "21:30", label: "Twilight Feast", period: "Night" },
+        { time: "22:30", label: "Late Lounge & Bar", period: "Late Night" }
+      ];
 
-  const seatingOptions = [
-    { name: "Oceanfront Terrace", desc: "Panoramic beach view & cool ocean breeze", icon: "🌊" },
-    { name: "Candlelit Window", desc: "Intimate romantic sunset & mood glow", icon: "🕯️" },
-    { name: "Garden Pavilion", desc: "Lush tropical open-air gazebo seating", icon: "🌿" },
-    { name: "Royal AC Dining Hall", desc: "Quiet, air-conditioned luxury seating", icon: "❄️" },
-    { name: "Private Lounge Cabana", desc: "Exclusive VIP curtained booth", icon: "🛋️" },
-    { name: "Chef's Live Counter", desc: "Front-row view of live grills & kitchen", icon: "🔥" }
-  ];
+  const seatingOptions = isSports
+    ? [
+        { name: "Tournament Match Setup", desc: "Championship balls/shuttles, pro cues, digital scoring & referee assistance", icon: "🏆" },
+        { name: "Casual Friendly Match", desc: "Standard gear, relaxed timers, chilled water bottles & towel service", icon: "🎯" },
+        { name: "Coaching & Practice Net", desc: "Auto bowling machine / training cones, speed radar & pro drills", icon: "⚡" },
+        { name: "Floodlit Night Arena", desc: "High-intensity anti-glare floodlights and stadium atmosphere", icon: "💡" },
+        { name: "AC Club Lounge Table", desc: "Climate-controlled indoor arena with spectator viewing lounge", icon: "❄️" },
+        { name: "VIP Private Court / Booth", desc: "Dedicated court attendant, priority gear and fresh beverage service", icon: "👑" }
+      ]
+    : isWellness
+    ? [
+        { name: "Lotus Ayurvedic Suite", desc: "Warm herbal oils, traditional brass vessels & steam chamber", icon: "🪷" },
+        { name: "Ocean Breeze Pavilion", desc: "Open-air sea view cabana with calming sound of waves", icon: "🌊" },
+        { name: "Hydrotherapy Hot Springs", desc: "Mineral-rich warm bubbling jacuzzi & cold plunge", icon: "🛁" },
+        { name: "Himalayan Salt Cave", desc: "Micro-climate salt therapy for deep respiratory relaxation", icon: "✨" },
+        { name: "Couples Luxury Sanctuary", desc: "Side-by-side massage tables, private plunge & rose petal bath", icon: "🕯️" },
+        { name: "Zen Meditation Studio", desc: "Singing bowls, aromatherapy diffusers & organic tea lounge", icon: "🧘" }
+      ]
+    : [
+        { name: "Oceanfront Terrace", desc: "Panoramic beach view & cool ocean breeze", icon: "🌊" },
+        { name: "Candlelit Window", desc: "Intimate romantic sunset & mood glow", icon: "🕯️" },
+        { name: "Garden Pavilion", desc: "Lush tropical open-air gazebo seating", icon: "🌿" },
+        { name: "Royal AC Dining Hall", desc: "Quiet, air-conditioned luxury seating", icon: "❄️" },
+        { name: "Private Lounge Cabana", desc: "Exclusive VIP curtained booth", icon: "🛋️" },
+        { name: "Chef's Live Counter", desc: "Front-row view of live grills & kitchen", icon: "🔥" }
+      ];
 
-  const occasions = [
-    { label: "Casual Dining", icon: "✨" },
-    { label: "Birthday Celebration", icon: "🎂" },
-    { label: "Anniversary / Date", icon: "💍" },
-    { label: "100% Pure Jain Table", icon: "🟢" },
-    { label: "Baby High Chair Required", icon: "👶" },
-    { label: "Chef Special / Wine Pairing", icon: "🍷" }
-  ];
+  const occasions = isSports
+    ? [
+        { label: "Friendly Casual Match", icon: "🤝" },
+        { label: "Competitive Tournament", icon: "🥇" },
+        { label: "Family & Kids Fun", icon: "👨‍👩‍👧‍👦" },
+        { label: "Solo Skill Practice", icon: "🎯" },
+        { label: "Coaching Request", icon: "📋" },
+        { label: "Equipment Hire Only", icon: "🎽" }
+      ]
+    : isWellness
+    ? [
+        { label: "🌿 Deep Relaxation Ritual", icon: "🌿" },
+        { label: "💆 Muscle Recovery & Sports", icon: "💆" },
+        { label: "🧖 Ayurvedic Detox & Steam", icon: "🧖" },
+        { label: "🧘 Mindfulness & Soundbath", icon: "🧘" },
+        { label: "💍 Couples Romantic Spa", icon: "💍" },
+        { label: "✨ Radiant Skin Facial", icon: "✨" }
+      ]
+    : [
+        { label: "Casual Dining", icon: "✨" },
+        { label: "Birthday Celebration", icon: "🎂" },
+        { label: "Anniversary / Date", icon: "💍" },
+        { label: "100% Pure Jain Table", icon: "🟢" },
+        { label: "Baby High Chair Required", icon: "👶" },
+        { label: "Chef Special / Wine Pairing", icon: "🍷" }
+      ];
 
   const handleConfirm = () => {
     const reservation: TableReservation = {
@@ -2325,25 +2423,45 @@ function TableReservationModal({
     onConfirm(reservation);
   };
 
+  const themeAccent = isSports ? "#8fd6c2" : isWellness ? "#e9bc73" : "#d5b582";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4 animate-in fade-in" onClick={onClose}>
       <div className="relative flex flex-col w-full max-w-2xl max-h-[92vh] overflow-hidden rounded-3xl border border-[#d5b582]/40 bg-[#11211f] text-[#ebe7dc] shadow-2xl" onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="border-b border-[#d5b582]/20 bg-gradient-to-r from-[#172a27] via-[#223935] to-[#172a27] px-6 py-5 sm:px-8">
+        <div className="border-b border-white/10 bg-gradient-to-r from-[#172a27] via-[#223935] to-[#172a27] px-6 py-5 sm:px-8">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3.5">
-              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner shrink-0">
-                {item.subCategory === "Bar" ? <Wine size={24} /> : <Utensils size={24} />}
+              <div className={`grid h-12 w-12 place-items-center rounded-2xl border shadow-inner shrink-0 ${
+                isSports
+                  ? "bg-[#8fd6c2]/15 text-[#8fd6c2] border-[#8fd6c2]/30"
+                  : isWellness
+                  ? "bg-[#e9bc73]/15 text-[#e9bc73] border-[#e9bc73]/30"
+                  : "bg-[#d5b582]/15 text-[#d5b582] border-[#d5b582]/30"
+              }`}>
+                {isSports ? <Target size={24} /> : isWellness ? <Sparkles size={24} /> : isBar ? <Wine size={24} /> : <Utensils size={24} />}
               </div>
               <div>
-                <span className="inline-block rounded-md bg-[#d5b582]/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#d5b582]">
-                  {existingReservation ? "Modify Table Reservation" : "Table Reservation · Today"}
+                <span className={`inline-block rounded-md px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ${
+                  isSports
+                    ? "bg-[#8fd6c2]/20 text-[#8fd6c2]"
+                    : isWellness
+                    ? "bg-[#e9bc73]/20 text-[#e9bc73]"
+                    : "bg-[#d5b582]/20 text-[#d5b582]"
+                }`}>
+                  {isSports
+                    ? (existingReservation ? "Modify Sports & Game Slot" : "🏆 Court & Playing Slot Booking · Today")
+                    : isWellness
+                    ? (existingReservation ? "Modify Wellness Ritual" : "🌿 Wellness Ritual Booking · Today")
+                    : (existingReservation ? "Modify Table Reservation" : "🍽️ Table Reservation · Today")}
                 </span>
                 <h2 className="mt-1 font-serif text-xl sm:text-2xl font-semibold text-[#fcf5e8]">{item.name}</h2>
                 <div className="mt-1 flex items-center gap-2 text-xs text-[#8ca6a1]">
                   <span>📍 {item.location}</span>
                   <span>·</span>
-                  <span className="text-[#d5b582] font-medium">⏰ Today's Service</span>
+                  <span className="font-medium text-[#ebe7dc]">
+                    {isSports ? "⏰ Today's Playing Slots" : isWellness ? "⏰ Today's Sanctuary Slots" : "⏰ Today's Service"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -2358,7 +2476,9 @@ function TableReservationModal({
           <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-6 sm:px-8 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5 text-xs font-semibold text-emerald-300">
               <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Current Booking: Reserved Today at {existingReservation.timeSlot} ({existingReservation.guests} Guests · {existingReservation.seatingArea})</span>
+              <span>
+                Current Booking: {isSports ? "Playing Time" : isWellness ? "Ritual Time" : "Dining Time"} Reserved Today at {existingReservation.timeSlot} ({existingReservation.guests} {isSports ? (existingReservation.guests === 1 ? "Player" : "Players") : (existingReservation.guests === 1 ? "Guest" : "Guests")} · {existingReservation.seatingArea})
+              </span>
             </div>
             {onCancelReservation && (
               <button
@@ -2373,11 +2493,17 @@ function TableReservationModal({
 
         {/* Modal Form Scrollable Content with balanced padding */}
         <div className="flex-1 overflow-y-auto px-6 sm:px-8 py-6 space-y-6 scrollbar-thin">
-          {/* 1. Party Size / Guests Selector */}
+          {/* 1. Party Size / Number of Players Selector */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] flex items-center gap-1.5">
-                <span>1. Party Size (Number of Guests)</span>
+                <span>
+                  {isSports
+                    ? "1. Number of Players (Group Size)"
+                    : isWellness
+                    ? "1. Number of Guests (Party Size)"
+                    : "1. Party Size (Number of Guests)"}
+                </span>
               </label>
               <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/25 px-2 py-1">
                 <button
@@ -2388,7 +2514,7 @@ function TableReservationModal({
                   -
                 </button>
                 <span className="font-mono text-xs font-bold text-[#fcf5e8] px-1 min-w-[70px] text-center">
-                  {guests} {guests === 1 ? "Guest" : "Guests"}
+                  {guests} {isSports ? (guests === 1 ? "Player" : "Players") : (guests === 1 ? "Guest" : "Guests")}
                 </span>
                 <button
                   type="button"
@@ -2426,11 +2552,15 @@ function TableReservationModal({
             </div>
           </div>
 
-          {/* 2. Dining Time Slot (Today - Symmetrical 2x4 Grid) */}
+          {/* 2. Time Slot Selector (Playing Time for Sports / Dining Time for Dining / Ritual Time for Wellness) */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">
-                2. Dining Time (Today · All-Day Slots)
+                {isSports
+                  ? "2. Playing Time (Today · All-Day Match Slots)"
+                  : isWellness
+                  ? "2. Ritual Time (Today · Sanctuary Slots)"
+                  : "2. Dining Time (Today · All-Day Slots)"}
               </label>
               <span className="text-[11px] text-[#8ca6a1]">Instant Confirmation</span>
             </div>
@@ -2469,13 +2599,19 @@ function TableReservationModal({
             </div>
           </div>
 
-          {/* 3. Seating Area Preference (Symmetrical 2x3 Grid) */}
+          {/* 3. Area / Setup Preference (Court & Gear Setup for Sports / Seating for Dining / Treatment Suite for Wellness) */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">
-                3. Preferred Seating Atmosphere
+                {isSports
+                  ? "3. Preferred Court / Table & Equipment Setup"
+                  : isWellness
+                  ? "3. Treatment Suite & Ambiance Preference"
+                  : "3. Preferred Seating Atmosphere"}
               </label>
-              <span className="text-[11px] text-[#8ca6a1]">Subject to table readiness</span>
+              <span className="text-[11px] text-[#8ca6a1]">
+                {isSports ? "Equipment sanitised & prepared" : "Subject to readiness"}
+              </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {seatingOptions.map(seat => {
@@ -2507,10 +2643,14 @@ function TableReservationModal({
             </div>
           </div>
 
-          {/* 4. Special Occasion / Dietary Requirement (Symmetrical 2x3 / 3x2 Grid) */}
+          {/* 4. Match Type / Occasion / Wellness Goal */}
           <div>
             <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block mb-2.5">
-              4. Special Occasion / Dietary Preference
+              {isSports
+                ? "4. Match / Session Type"
+                : isWellness
+                ? "4. Wellness Focus & Ritual Goal"
+                : "4. Special Occasion / Dietary Preference"}
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {occasions.map(occ => {
@@ -2537,20 +2677,30 @@ function TableReservationModal({
           {/* 5. Special Request Notes */}
           <div>
             <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block mb-2">
-              5. Custom Guest Notes / Special Requests (Optional)
+              {isSports
+                ? "5. Player Gear Requests & Custom Notes (Optional)"
+                : isWellness
+                ? "5. Wellness Requests & Health Notes (Optional)"
+                : "5. Custom Guest Notes / Special Requests (Optional)"}
             </label>
             <input
               type="text"
               value={specialRequests}
               onChange={e => setSpecialRequests(e.target.value)}
-              placeholder="e.g. Quiet corner table, anniversary candlelight setup, extra Jain prep..."
+              placeholder={
+                isSports
+                  ? "e.g. Need left-handed cues, size 5 cricket bat, Yonex carbon racquets, extra match balls..."
+                  : isWellness
+                  ? "e.g. Medium pressure, lavender aroma preference, sensitive skin..."
+                  : "e.g. Quiet corner table, anniversary candlelight setup, extra Jain prep..."
+              }
               className="w-full rounded-xl border border-white/10 bg-black/25 px-4 py-3 text-xs text-[#fcf5e8] placeholder:text-[#6a807b] focus:border-[#d5b582] focus:outline-none focus:ring-1 focus:ring-[#d5b582]"
             />
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t border-[#d5b582]/20 bg-[#162928] px-6 sm:px-8 py-4 flex items-center justify-between gap-4">
+        <div className="border-t border-white/10 bg-[#162928] px-6 sm:px-8 py-4 flex items-center justify-between gap-4">
           <button className="sr-button-quiet text-xs font-semibold px-4 py-2.5" onClick={onClose}>
             Cancel
           </button>
@@ -2560,7 +2710,11 @@ function TableReservationModal({
           >
             <CheckCircle2 size={16} />
             <span>
-              {existingReservation ? "Update Table Reservation" : `Confirm Table for ${guests} ${guests === 1 ? "Guest" : "Guests"}`}
+              {isSports
+                ? (existingReservation ? "Update Playing Time Slot" : `Confirm Playing Time for ${guests} ${guests === 1 ? "Player" : "Players"}`)
+                : isWellness
+                ? (existingReservation ? "Update Ritual Time" : `Confirm Wellness Ritual for ${guests} ${guests === 1 ? "Guest" : "Guests"}`)
+                : (existingReservation ? "Update Table Reservation" : `Confirm Table for ${guests} ${guests === 1 ? "Guest" : "Guests"}`)}
             </span>
           </button>
         </div>
@@ -2848,77 +3002,62 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
               ))}
             </div>
 
-            {/* Booking Modal / Dialog if an item is selected */}
+            {/* Booking Modal / Dialog for All Amenities (Dining, Sports Playing Time, Wellness) */}
             {bookingItem && (
-              bookingItem.gameType === "Food & Drinks" ? (
-                <TableReservationModal
-                  item={bookingItem}
-                  existingReservation={tableReservations[bookingItem.id]}
-                  onClose={() => setBookingItem(null)}
-                  onConfirm={(res) => {
-                    const newRecord: GuestReservationRecord = {
-                      id: res.id,
-                      venueId: res.venueId,
-                      venueName: res.venueName,
-                      category: bookingItem.subCategory === "Bar" ? "Bar" : "Dining",
-                      iconType: bookingItem.subCategory === "Bar" ? "wine" : "utensils",
-                      guests: res.guests,
-                      timeSlot: res.timeSlot,
-                      date: "Today · 26 Sep 2026",
-                      seatingArea: res.seatingArea,
-                      occasion: res.occasion,
-                      specialRequests: res.specialRequests,
-                      price: bookingItem.price,
-                      location: bookingItem.location,
-                      status: "Confirmed"
-                    };
-                    const updated = [newRecord, ...allReservations.filter(r => r.venueId !== res.venueId)];
-                    saveStoredGuestReservations(updated);
-                    setAllReservations(updated);
-                    setBookingItem(null);
-                    toast.success("Table Reserved Successfully!", {
-                      description: `Reserved for ${res.guests} ${res.guests === 1 ? 'guest' : 'guests'} at ${res.venueName} · ${res.timeSlot} (${res.seatingArea})`
+              <TableReservationModal
+                item={bookingItem}
+                existingReservation={tableReservations[bookingItem.id]}
+                onClose={() => setBookingItem(null)}
+                onConfirm={(res) => {
+                  const isSports = bookingItem.gameType === "Indoor Games" || bookingItem.gameType === "Outdoor Games" || bookingItem.category === "Sports" || bookingItem.category === "Activity" || bookingItem.id === "snooker-1" || bookingItem.id === "pool-1" || bookingItem.id === "carrom-1" || bookingItem.id === "cricket-1" || bookingItem.id === "badminton-1" || bookingItem.id === "golf-1";
+                  const isWellness = bookingItem.gameType === "Wellness" || bookingItem.category === "Wellness" || bookingItem.id === "spa-1" || bookingItem.id === "yoga-1" || bookingItem.id === "pool-resort-1";
+                  const isBar = bookingItem.subCategory === "Bar" || bookingItem.category === "Bar";
+
+                  const newRecord: GuestReservationRecord = {
+                    id: res.id,
+                    venueId: res.venueId,
+                    venueName: res.venueName,
+                    category: isBar ? "Bar" : isSports ? "Sports" : isWellness ? "Wellness" : "Dining",
+                    iconType: isBar ? "wine" : isSports ? "target" : isWellness ? "sparkles" : "utensils",
+                    guests: res.guests,
+                    timeSlot: res.timeSlot,
+                    date: "Today · 26 Sep 2026",
+                    seatingArea: res.seatingArea,
+                    occasion: res.occasion,
+                    specialRequests: res.specialRequests,
+                    price: bookingItem.price,
+                    location: bookingItem.location,
+                    status: "Confirmed"
+                  };
+                  const updated = [newRecord, ...allReservations.filter(r => r.venueId !== res.venueId)];
+                  saveStoredGuestReservations(updated);
+                  setAllReservations(updated);
+                  setBookingItem(null);
+
+                  if (isSports) {
+                    toast.success(`Playing Slot Booked: ${res.venueName}!`, {
+                      description: `Playing Time: ${res.timeSlot} · ${res.guests} ${res.guests === 1 ? 'Player' : 'Players'} · ${res.seatingArea}`
                     });
-                  }}
-                  onCancelReservation={(venueId) => {
-                    const updated = allReservations.filter(r => r.venueId !== venueId);
-                    saveStoredGuestReservations(updated);
-                    setAllReservations(updated);
-                    setBookingItem(null);
-                    toast.info("Reservation Cancelled", {
-                      description: "Your table reservation for today has been cancelled."
+                  } else if (isWellness) {
+                    toast.success(`Wellness Ritual Booked: ${res.venueName}!`, {
+                      description: `Ritual Time: ${res.timeSlot} · ${res.guests} ${res.guests === 1 ? 'Guest' : 'Guests'} · ${res.seatingArea}`
                     });
-                  }}
-                />
-              ) : (
-                <div className="mt-5 rounded-2xl border border-[#d5b582]/30 bg-[#d5b582]/[.08] p-4 animate-in fade-in">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <span className="rounded-md bg-[#d5b582]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#d5b582]">
-                        {bookingItem.subCategory}
-                      </span>
-                      <h3 className="mt-2 font-serif text-lg font-semibold text-[#fcf5e8]">{bookingItem.name}</h3>
-                      <p className="sr-muted mt-1 text-xs leading-5">{bookingItem.details}</p>
-                      <div className="mt-3 flex items-center gap-3 text-xs text-[#d5b582]">
-                        <span className="font-semibold">{bookingItem.price}</span>
-                        <span>·</span>
-                        <span className="sr-muted">{bookingItem.location}</span>
-                      </div>
-                    </div>
-                    <button className="sr-button-quiet text-xs" onClick={() => setBookingItem(null)}>
-                      ✕
-                    </button>
-                  </div>
-                  <div className="mt-4 flex gap-2">
-                    <button className="sr-button flex-1" onClick={() => confirmBooking(bookingItem)}>
-                      Confirm Instant Booking
-                    </button>
-                    <button className="sr-button-quiet" onClick={() => setBookingItem(null)}>
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )
+                  } else {
+                    toast.success(`Table Reserved: ${res.venueName}!`, {
+                      description: `Dining Time: ${res.timeSlot} · ${res.guests} ${res.guests === 1 ? 'Guest' : 'Guests'} · ${res.seatingArea}`
+                    });
+                  }
+                }}
+                onCancelReservation={(venueId) => {
+                  const updated = allReservations.filter(r => r.venueId !== venueId);
+                  saveStoredGuestReservations(updated);
+                  setAllReservations(updated);
+                  setBookingItem(null);
+                  toast.info("Reservation Cancelled", {
+                    description: "Your booking for today has been cancelled."
+                  });
+                }}
+              />
             )}
 
             {/* Amenities List Grouped with Sub-sections */}
@@ -2975,7 +3114,7 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                             <div className="flex items-center gap-2">
                               <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
                               <span className="font-semibold text-emerald-300">
-                                Reserved Today at {tableReservations[item.id].timeSlot} ({tableReservations[item.id].guests} {tableReservations[item.id].guests === 1 ? "Guest" : "Guests"} · {tableReservations[item.id].seatingArea})
+                                Dining Time: Reserved Today at {tableReservations[item.id].timeSlot} ({tableReservations[item.id].guests} {tableReservations[item.id].guests === 1 ? "Guest" : "Guests"} · {tableReservations[item.id].seatingArea})
                               </span>
                             </div>
                             <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">
@@ -3062,7 +3201,11 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                     {indoorGames.map((game) => (
                       <div
                         key={game.id}
-                        className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#d5b582]/40 hover:bg-white/[.05] shadow-sm"
+                        className={`group relative rounded-2xl border p-4 transition-all hover:bg-white/[.05] shadow-sm ${
+                          tableReservations[game.id]
+                            ? "border-emerald-500/40 bg-emerald-950/[.12]"
+                            : "border-white/8 bg-white/[.025] hover:border-[#d5b582]/40"
+                        }`}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-start gap-3.5">
@@ -3084,15 +3227,43 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                               </div>
                             </div>
                           </div>
-                          <StatusChip tone={game.tone}>{game.state}</StatusChip>
+                          <StatusChip tone={tableReservations[game.id] ? "teal" : game.tone}>
+                            {tableReservations[game.id] ? "Slot Booked" : game.state}
+                          </StatusChip>
                         </div>
+
+                        {/* Active Same-Day Reservation Indicator */}
+                        {tableReservations[game.id] && (
+                          <div className="mt-3 flex items-center justify-between rounded-xl border border-emerald-500/35 bg-emerald-500/[.10] px-3.5 py-2.5 text-xs text-emerald-200 animate-in fade-in">
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                              <span className="font-semibold text-emerald-300">
+                                Playing Time: Reserved Today at {tableReservations[game.id].timeSlot} ({tableReservations[game.id].guests} {tableReservations[game.id].guests === 1 ? "Player" : "Players"} · {tableReservations[game.id].seatingArea})
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">
+                              {tableReservations[game.id].id}
+                            </span>
+                          </div>
+                        )}
+
                         <div className="mt-3.5 flex items-center justify-between border-t border-white/6 pt-2.5">
-                          <span className="text-xs text-[#9eb6b0]">Instant slot reservation</span>
+                          <span className="text-xs text-[#9eb6b0]">
+                            {tableReservations[game.id]
+                              ? `Playing slot reserved for ${tableReservations[game.id].guests} players · Click button to modify`
+                              : "Instant playing slot reservation"}
+                          </span>
                           <button
-                            className="rounded-lg bg-[#d5b582]/20 px-3.5 py-1.5 text-xs font-semibold text-[#d5b582] transition-colors hover:bg-[#d5b582] hover:text-[#122020]"
+                            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all shadow-sm ${
+                              tableReservations[game.id]
+                                ? "bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500 hover:text-[#122020] font-bold"
+                                : "bg-[#d5b582]/20 text-[#d5b582] hover:bg-[#d5b582] hover:text-[#122020]"
+                            }`}
                             onClick={() => setBookingItem(game)}
                           >
-                            Book Slot
+                            {tableReservations[game.id]
+                              ? `✓ Playing Time: @ ${tableReservations[game.id].timeSlot.split(' ')[0]} (${tableReservations[game.id].guests}p)`
+                              : "Book Playing Slot"}
                           </button>
                         </div>
                       </div>
@@ -3116,7 +3287,11 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                     {outdoorGames.map((game) => (
                       <div
                         key={game.id}
-                        className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#8fd6c2]/40 hover:bg-white/[.05] shadow-sm"
+                        className={`group relative rounded-2xl border p-4 transition-all hover:bg-white/[.05] shadow-sm ${
+                          tableReservations[game.id]
+                            ? "border-emerald-500/40 bg-emerald-950/[.12]"
+                            : "border-white/8 bg-white/[.025] hover:border-[#8fd6c2]/40"
+                        }`}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-start gap-3.5">
@@ -3138,15 +3313,43 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                               </div>
                             </div>
                           </div>
-                          <StatusChip tone={game.tone}>{game.state}</StatusChip>
+                          <StatusChip tone={tableReservations[game.id] ? "teal" : game.tone}>
+                            {tableReservations[game.id] ? "Court Booked" : game.state}
+                          </StatusChip>
                         </div>
+
+                        {/* Active Same-Day Reservation Indicator */}
+                        {tableReservations[game.id] && (
+                          <div className="mt-3 flex items-center justify-between rounded-xl border border-emerald-500/35 bg-emerald-500/[.10] px-3.5 py-2.5 text-xs text-emerald-200 animate-in fade-in">
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                              <span className="font-semibold text-emerald-300">
+                                Playing Time: Reserved Today at {tableReservations[game.id].timeSlot} ({tableReservations[game.id].guests} {tableReservations[game.id].guests === 1 ? "Player" : "Players"} · {tableReservations[game.id].seatingArea})
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">
+                              {tableReservations[game.id].id}
+                            </span>
+                          </div>
+                        )}
+
                         <div className="mt-3.5 flex items-center justify-between border-t border-white/6 pt-2.5">
-                          <span className="text-xs text-[#9eb6b0]">Complimentary equipment provided</span>
+                          <span className="text-xs text-[#9eb6b0]">
+                            {tableReservations[game.id]
+                              ? `Court reserved for ${tableReservations[game.id].guests} players · Click button to modify`
+                              : "Complimentary equipment provided"}
+                          </span>
                           <button
-                            className="rounded-lg bg-[#8fd6c2]/20 px-3.5 py-1.5 text-xs font-semibold text-[#8fd6c2] transition-colors hover:bg-[#8fd6c2] hover:text-[#122020]"
+                            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all shadow-sm ${
+                              tableReservations[game.id]
+                                ? "bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500 hover:text-[#122020] font-bold"
+                                : "bg-[#8fd6c2]/20 text-[#8fd6c2] hover:bg-[#8fd6c2] hover:text-[#122020]"
+                            }`}
                             onClick={() => setBookingItem(game)}
                           >
-                            Book Pitch / Court
+                            {tableReservations[game.id]
+                              ? `✓ Playing Time: @ ${tableReservations[game.id].timeSlot.split(' ')[0]} (${tableReservations[game.id].guests}p)`
+                              : "Book Pitch / Court"}
                           </button>
                         </div>
                       </div>
@@ -3170,7 +3373,11 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                     {wellnessAmenities.map((item) => (
                       <div
                         key={item.id}
-                        className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#e9bc73]/40 hover:bg-white/[.05] shadow-sm"
+                        className={`group relative rounded-2xl border p-4 transition-all hover:bg-white/[.05] shadow-sm ${
+                          tableReservations[item.id]
+                            ? "border-emerald-500/40 bg-emerald-950/[.12]"
+                            : "border-white/8 bg-white/[.025] hover:border-[#e9bc73]/40"
+                        }`}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-start gap-3.5">
@@ -3192,21 +3399,49 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                               </div>
                             </div>
                           </div>
-                          <StatusChip tone={item.tone}>{item.state}</StatusChip>
+                          <StatusChip tone={tableReservations[item.id] ? "teal" : item.tone}>
+                            {tableReservations[item.id] ? "Ritual Booked" : item.state}
+                          </StatusChip>
                         </div>
+
+                        {/* Active Same-Day Reservation Indicator */}
+                        {tableReservations[item.id] && (
+                          <div className="mt-3 flex items-center justify-between rounded-xl border border-emerald-500/35 bg-emerald-500/[.10] px-3.5 py-2.5 text-xs text-emerald-200 animate-in fade-in">
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                              <span className="font-semibold text-emerald-300">
+                                Ritual Time: Reserved Today at {tableReservations[item.id].timeSlot} ({tableReservations[item.id].guests} {tableReservations[item.id].guests === 1 ? "Guest" : "Guests"} · {tableReservations[item.id].seatingArea})
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">
+                              {tableReservations[item.id].id}
+                            </span>
+                          </div>
+                        )}
+
                         <div className="mt-3.5 flex items-center justify-between border-t border-white/6 pt-2.5">
-                          <span className="text-xs text-[#9eb6b0]">Lotus Sanctuary access</span>
+                          <span className="text-xs text-[#9eb6b0]">
+                            {tableReservations[item.id]
+                              ? `Ritual scheduled for ${tableReservations[item.id].guests} guests · Click button to modify`
+                              : "Lotus Sanctuary access"}
+                          </span>
                           <button
-                            className="rounded-lg bg-[#e9bc73]/20 px-3.5 py-1.5 text-xs font-semibold text-[#e9bc73] transition-colors hover:bg-[#e9bc73] hover:text-[#122020]"
+                            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all shadow-sm ${
+                              tableReservations[item.id]
+                                ? "bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500 hover:text-[#122020] font-bold"
+                                : "bg-[#e9bc73]/20 text-[#e9bc73] hover:bg-[#e9bc73] hover:text-[#122020]"
+                            }`}
                             onClick={() => {
-                              if (item.state === "Waitlist") {
+                              if (item.state === "Waitlist" && !tableReservations[item.id]) {
                                 setPage("amenity-detail");
                               } else {
                                 setBookingItem(item);
                               }
                             }}
                           >
-                            {item.state === "Waitlist" ? "Join Waitlist" : "Reserve"}
+                            {tableReservations[item.id]
+                              ? `✓ Ritual Time: @ ${tableReservations[item.id].timeSlot.split(' ')[0]} (${tableReservations[item.id].guests}p)`
+                              : item.state === "Waitlist" ? "Join Waitlist" : "Reserve Ritual"}
                           </button>
                         </div>
                       </div>
@@ -3413,112 +3648,126 @@ function GuestMyReservations({ setPage }: { setPage: (p: Page) => void }) {
                   </button>
                 </div>
               ) : (
-                filteredReservations.map((res) => (
-                  <div
-                    key={res.id}
-                    className="rounded-2xl border border-[#d5b582]/30 bg-gradient-to-br from-white/[.04] to-white/[.01] p-4.5 shadow-md transition-all hover:border-[#d5b582]/60"
-                  >
-                    {/* Top Row: Time Badge, Venue Name & Status */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="flex items-center gap-1.5 rounded-lg bg-[#d5b582] px-2.5 py-1 font-mono text-xs font-bold text-[#122020] shadow-sm">
-                            <Clock3 size={13} />
-                            <span>{res.timeSlot}</span>
-                          </span>
-                          <span className="rounded bg-white/10 px-2 py-0.5 text-[10px] font-bold text-[#c7d9d3]">
-                            {res.category === "Dining" ? "🍽️ Restaurant Table" : res.category === "Bar" ? "🍸 Lounge Bar" : res.category === "Wellness" ? "🌿 Wellness Spa" : "🎱 Activity Slot"}
-                          </span>
-                        </div>
-                        <h3 className="mt-2 font-serif text-lg font-semibold text-[#fcf5e8]">
-                          {res.venueName}
-                        </h3>
-                        <div className="mt-1 flex items-center gap-2 text-xs text-[#8ca6a1]">
-                          <MapPin size={13} className="text-[#d5b582]" />
-                          <span>{res.location}</span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1.5">
-                        <StatusChip tone="teal" pulse>
-                          {res.status} Today
-                        </StatusChip>
-                        <span className="font-mono text-[10px] text-[#8ca6a1]">#{res.id}</span>
-                      </div>
-                    </div>
+                filteredReservations.map((res) => {
+                  const isSportsRes = res.category === "Sports" || res.category === "Activity";
+                  const isWellnessRes = res.category === "Wellness";
+                  const isBarRes = res.category === "Bar";
 
-                    {/* Booking Details Matrix */}
-                    <div className="mt-3.5 rounded-xl border border-white/6 bg-black/20 p-3 grid grid-cols-2 gap-2 text-xs">
-                      <div>
-                        <span className="sr-muted text-[10px] uppercase tracking-wider block">Party Size</span>
-                        <span className="font-semibold text-[#fcf5e8] mt-0.5 block">
-                          👥 {res.guests} {res.guests === 1 ? "Guest" : "Guests"}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="sr-muted text-[10px] uppercase tracking-wider block">Seating Area</span>
-                        <span className="font-semibold text-[#fcf5e8] mt-0.5 block truncate">
-                          🪑 {res.seatingArea}
-                        </span>
-                      </div>
-                      {res.occasion && res.occasion !== "None" && res.occasion !== "Casual Dining" && (
-                        <div className="col-span-2 border-t border-white/6 pt-2">
-                          <span className="sr-muted text-[10px] uppercase tracking-wider block">Special Occasion</span>
-                          <span className="font-medium text-[#d5b582] mt-0.5 block">
-                            ✨ {res.occasion}
-                          </span>
+                  return (
+                    <div
+                      key={res.id}
+                      className="rounded-2xl border border-[#d5b582]/30 bg-gradient-to-br from-white/[.04] to-white/[.01] p-4.5 shadow-md transition-all hover:border-[#d5b582]/60"
+                    >
+                      {/* Top Row: Time Badge, Venue Name & Status */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="flex items-center gap-1.5 rounded-lg bg-[#d5b582] px-2.5 py-1 font-mono text-xs font-bold text-[#122020] shadow-sm">
+                              <Clock3 size={13} />
+                              <span>{isSportsRes ? `Playing Time: ${res.timeSlot}` : isWellnessRes ? `Ritual Time: ${res.timeSlot}` : `Dining Time: ${res.timeSlot}`}</span>
+                            </span>
+                            <span className="rounded bg-white/10 px-2 py-0.5 text-[10px] font-bold text-[#c7d9d3]">
+                              {isSportsRes ? "🏆 Sports & Game Slot" : isWellnessRes ? "🌿 Wellness Ritual" : isBarRes ? "🍸 Lounge Bar" : "🍽️ Restaurant Table"}
+                            </span>
+                          </div>
+                          <h3 className="mt-2 font-serif text-lg font-semibold text-[#fcf5e8]">
+                            {res.venueName}
+                          </h3>
+                          <div className="mt-1 flex items-center gap-2 text-xs text-[#8ca6a1]">
+                            <MapPin size={13} className="text-[#d5b582]" />
+                            <span>{res.location}</span>
+                          </div>
                         </div>
-                      )}
-                      {res.specialRequests && (
-                        <div className="col-span-2 border-t border-white/6 pt-2">
-                          <span className="sr-muted text-[10px] uppercase tracking-wider block">Custom Requests</span>
-                          <span className="text-[#d4ded7] text-[11px] mt-0.5 block italic">
-                            "{res.specialRequests}"
-                          </span>
+                        <div className="flex flex-col items-end gap-1.5">
+                          <StatusChip tone="teal" pulse>
+                            {res.status} Today
+                          </StatusChip>
+                          <span className="font-mono text-[10px] text-[#8ca6a1]">#{res.id}</span>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-white/8 pt-3">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setEditingReservation(res)}
-                          className="rounded-lg border border-[#d5b582]/40 bg-[#d5b582]/10 px-3 py-1.5 text-xs font-semibold text-[#d5b582] hover:bg-[#d5b582] hover:text-[#122020] transition-colors"
-                        >
-                          ✏️ Modify Slot
-                        </button>
-                        <button
-                          onClick={() => handleCancel(res.id, res.venueName)}
-                          className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-300 hover:bg-red-500 hover:text-white transition-colors"
-                        >
-                          Cancel
-                        </button>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        {(res.category === "Dining" || res.category === "Bar") && (
-                          <button
-                            onClick={() => openVenueMenu(res.venueId)}
-                            className="rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-[#c4ded6] hover:bg-white/10"
-                          >
-                            📖 View Menu
-                          </button>
+                      {/* Booking Details Matrix */}
+                      <div className="mt-3.5 rounded-xl border border-white/6 bg-black/20 p-3 grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="sr-muted text-[10px] uppercase tracking-wider block">
+                            {isSportsRes ? "Number of Players" : isWellnessRes ? "Number of Guests" : "Party Size"}
+                          </span>
+                          <span className="font-semibold text-[#fcf5e8] mt-0.5 block">
+                            👥 {res.guests} {isSportsRes ? (res.guests === 1 ? "Player" : "Players") : (res.guests === 1 ? "Guest" : "Guests")}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="sr-muted text-[10px] uppercase tracking-wider block">
+                            {isSportsRes ? "Court / Table Setup" : isWellnessRes ? "Treatment Suite" : "Seating Area"}
+                          </span>
+                          <span className="font-semibold text-[#fcf5e8] mt-0.5 block truncate">
+                            {isSportsRes ? "🏟️ " : isWellnessRes ? "🪷 " : "🪑 "}{res.seatingArea}
+                          </span>
+                        </div>
+                        {res.occasion && res.occasion !== "None" && res.occasion !== "Casual Dining" && (
+                          <div className="col-span-2 border-t border-white/6 pt-2">
+                            <span className="sr-muted text-[10px] uppercase tracking-wider block">
+                              {isSportsRes ? "Match / Session Type" : isWellnessRes ? "Wellness Ritual Focus" : "Special Occasion"}
+                            </span>
+                            <span className="font-medium text-[#d5b582] mt-0.5 block">
+                              ✨ {res.occasion}
+                            </span>
+                          </div>
                         )}
-                        <button
-                          onClick={() => {
-                            toast.success(`Buggy requested to ${res.venueName}!`, {
-                              description: "Pickup from Room 101 dispatched to driver."
-                            });
-                            setPage("buggy");
-                          }}
-                          className="rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-[#8fd6c2] hover:bg-[#8fd6c2]/20"
-                        >
-                          🚗 Buggy
-                        </button>
+                        {res.specialRequests && (
+                          <div className="col-span-2 border-t border-white/6 pt-2">
+                            <span className="sr-muted text-[10px] uppercase tracking-wider block">
+                              {isSportsRes ? "Player Gear & Custom Notes" : isWellnessRes ? "Treatment & Health Notes" : "Custom Requests"}
+                            </span>
+                            <span className="text-[#d4ded7] text-[11px] mt-0.5 block italic">
+                              "{res.specialRequests}"
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-white/8 pt-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setEditingReservation(res)}
+                            className="rounded-lg border border-[#d5b582]/40 bg-[#d5b582]/10 px-3 py-1.5 text-xs font-semibold text-[#d5b582] hover:bg-[#d5b582] hover:text-[#122020] transition-colors"
+                          >
+                            ✏️ {isSportsRes ? "Modify Playing Time" : isWellnessRes ? "Modify Ritual Time" : "Modify Dining Time"}
+                          </button>
+                          <button
+                            onClick={() => handleCancel(res.id, res.venueName)}
+                            className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-300 hover:bg-red-500 hover:text-white transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {(res.category === "Dining" || res.category === "Bar") && (
+                            <button
+                              onClick={() => openVenueMenu(res.venueId)}
+                              className="rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-[#c4ded6] hover:bg-white/10"
+                            >
+                              📖 View Menu
+                            </button>
+                          )}
+                          <button
+                            onClick={() => {
+                              toast.success(`Buggy requested to ${res.venueName}!`, {
+                                description: "Pickup from Room 101 dispatched to driver."
+                              });
+                              setPage("buggy");
+                            }}
+                            className="rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-[#8fd6c2] hover:bg-[#8fd6c2]/20"
+                          >
+                            🚗 Buggy
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
 
@@ -3542,7 +3791,9 @@ function GuestMyReservations({ setPage }: { setPage: (p: Page) => void }) {
           item={{
             id: editingReservation.venueId,
             name: editingReservation.venueName,
-            subCategory: editingReservation.category === "Bar" ? "Bar" : "Restaurant",
+            category: editingReservation.category,
+            gameType: (editingReservation.category === "Sports" || editingReservation.category === "Activity") ? "Indoor Games" : editingReservation.category === "Wellness" ? "Wellness" : "Food & Drinks",
+            subCategory: editingReservation.category === "Bar" ? "Bar" : editingReservation.category === "Sports" ? "Sports" : editingReservation.category === "Wellness" ? "Wellness" : "Restaurant",
             location: editingReservation.location,
             price: editingReservation.price || "À la carte"
           }}
