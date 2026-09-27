@@ -112,15 +112,19 @@ function Stat({label,value,delta,tone="teal",icon: I}:{label:string;value:string
 
 function Entry({onEnter}:{onEnter:()=>void}) {
   const [imgIndex, setImgIndex] = useState<number>(() => {
-    // Generate a new random index on every page load/reload
+    // Generate a random initial index on page load
     return Math.floor(Math.random() * RESORT_HERO_IMAGES.length);
   });
 
   const activeHero = RESORT_HERO_IMAGES[imgIndex];
 
-  const handleNextImage = () => {
-    setImgIndex((prev) => (prev + 1) % RESORT_HERO_IMAGES.length);
-  };
+  // Automatically cycle to the next hero image every 4.5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setImgIndex((prev) => (prev + 1) % RESORT_HERO_IMAGES.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, []);
 
   return <div className="sr-entry">
   <div className="sr-entry-copy"><Logo/><div className="relative z-[1] max-w-xl"><div className="sr-kicker mb-5">PS ID 4 · HACKCELESTIAL 3.0</div><h1 className="font-serif text-[clamp(44px,6vw,82px)] font-medium leading-[.96] tracking-[-.055em] text-[#f2ede2]">From resort data<br/><span className="text-[#8fd6c2]">to intelligent action.</span></h1><p className="sr-muted mt-7 max-w-md text-[15px] leading-7">An intelligent operating layer connecting resort operations, guest experience and revenue intelligence.</p><button className="sr-button mt-9 min-h-12 px-6" onClick={onEnter}>Enter platform <ArrowRight size={16}/></button></div><div className="relative z-[1] flex items-center gap-3 text-[10px] uppercase tracking-[.14em] text-[#718b86]"><span className="h-2 w-2 rounded-full bg-[#8fd6c2]"/> Sense <span>→</span> Predict <span>→</span> Recommend <span>→</span> Act</div></div>
@@ -136,20 +140,9 @@ function Entry({onEnter}:{onEnter:()=>void}) {
           target.src = resortWebFallback;
         }
       }}
-      className="sr-hero-image transition-transform duration-1000 ease-out group-hover:scale-105"
+      className="sr-hero-image transition-all duration-1000 ease-out animate-in fade-in group-hover:scale-105"
       alt={activeHero.title}
     />
-    <div className="absolute top-5 right-5 z-20 flex items-center gap-2">
-      <button
-        onClick={handleNextImage}
-        className="flex items-center gap-1.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1.5 text-[11px] font-medium text-white/90 shadow-lg transition-all hover:bg-black/60 hover:border-white/40"
-        title="Switch resort vista"
-      >
-        <RefreshCw size={12} className="animate-spin-slow" />
-        <span>{activeHero.tag}</span>
-        <span className="text-white/50 text-[10px]">({imgIndex + 1}/{RESORT_HERO_IMAGES.length})</span>
-      </button>
-    </div>
     <div className="sr-entry-card">
       <div className="flex items-center justify-between"><StatusChip>Live environment</StatusChip><span className="sr-dim font-mono text-[10px]">v0.9.4</span></div>
       <p className="mt-5 font-serif text-xl leading-tight text-[#f3ede2]">{activeHero.title}</p>
