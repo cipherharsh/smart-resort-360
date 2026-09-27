@@ -128,24 +128,35 @@ function Entry({onEnter}:{onEnter:()=>void}) {
 
   return <div className="sr-entry">
   <div className="sr-entry-copy"><Logo/><div className="relative z-[1] max-w-xl"><div className="sr-kicker mb-5">PS ID 4 · HACKCELESTIAL 3.0</div><h1 className="font-serif text-[clamp(44px,6vw,82px)] font-medium leading-[.96] tracking-[-.055em] text-[#f2ede2]">From resort data<br/><span className="text-[#8fd6c2]">to intelligent action.</span></h1><p className="sr-muted mt-7 max-w-md text-[15px] leading-7">An intelligent operating layer connecting resort operations, guest experience and revenue intelligence.</p><button className="sr-button mt-9 min-h-12 px-6" onClick={onEnter}>Enter platform <ArrowRight size={16}/></button></div><div className="relative z-[1] flex items-center gap-3 text-[10px] uppercase tracking-[.14em] text-[#718b86]"><span className="h-2 w-2 rounded-full bg-[#8fd6c2]"/> Sense <span>→</span> Predict <span>→</span> Recommend <span>→</span> Act</div></div>
-  <div className="sr-entry-art relative overflow-hidden group">
-    <img
-      key={activeHero.url}
-      src={activeHero.url}
-      onError={(e) => {
-        const target = e.currentTarget;
-        if (!target.src.includes("resort-hero.jpg") && target.src !== resortFallback) {
-          target.src = resortFallback;
-        } else {
-          target.src = resortWebFallback;
-        }
-      }}
-      className="sr-hero-image transition-all duration-1000 ease-out animate-in fade-in group-hover:scale-105"
-      alt={activeHero.title}
-    />
-    <div className="sr-entry-card">
+  <div className="sr-entry-art relative overflow-hidden group bg-[#0e1a19]">
+    {RESORT_HERO_IMAGES.map((hero, idx) => {
+      const isActive = idx === imgIndex;
+      return (
+        <img
+          key={hero.url}
+          src={hero.url}
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (!target.src.includes("resort-hero.jpg") && target.src !== resortFallback) {
+              target.src = resortFallback;
+            } else {
+              target.src = resortWebFallback;
+            }
+          }}
+          className={`absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-in-out ${
+            isActive ? "opacity-100 scale-100 z-10" : "opacity-0 scale-105 z-0 pointer-events-none"
+          }`}
+          style={{
+            filter: "saturate(.85) contrast(.98)",
+            willChange: "opacity, transform"
+          }}
+          alt={hero.title}
+        />
+      );
+    })}
+    <div className="sr-entry-card z-20 relative">
       <div className="flex items-center justify-between"><StatusChip>Live environment</StatusChip><span className="sr-dim font-mono text-[10px]">v0.9.4</span></div>
-      <p className="mt-5 font-serif text-xl leading-tight text-[#f3ede2]">{activeHero.title}</p>
+      <p className="mt-5 font-serif text-xl leading-tight text-[#f3ede2] transition-opacity duration-500">{activeHero.title}</p>
       <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-4">
         <div><div className="sr-label">Occupancy</div><div className="mt-1 text-sm font-semibold">87.4%</div></div>
         <div><div className="sr-label">Guest pulse</div><div className="mt-1 text-sm font-semibold">4.8 <span className="text-[#e9bc73]">★</span></div></div>
