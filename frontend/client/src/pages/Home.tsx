@@ -2118,10 +2118,287 @@ function RasoiRoyalMenuModal({ onClose, onReserve }: { onClose: () => void; onRe
   );
 }
 
+interface TableReservation {
+  id: string;
+  venueId: string;
+  venueName: string;
+  guests: number;
+  timeSlot: string;
+  seatingArea: string;
+  occasion?: string;
+  specialRequests?: string;
+  reservedAt: string;
+}
+
+function TableReservationModal({
+  item,
+  existingReservation,
+  onClose,
+  onConfirm,
+  onCancelReservation
+}: {
+  item: any;
+  existingReservation?: TableReservation;
+  onClose: () => void;
+  onConfirm: (reservation: TableReservation) => void;
+  onCancelReservation?: (venueId: string) => void;
+}) {
+  const [guests, setGuests] = useState<number>(existingReservation ? existingReservation.guests : 2);
+  const [timeSlot, setTimeSlot] = useState<string>(existingReservation ? existingReservation.timeSlot : "20:00 (Prime Dinner)");
+  const [seatingArea, setSeatingArea] = useState<string>(existingReservation ? existingReservation.seatingArea : "🌟 Oceanfront Terrace");
+  const [occasion, setOccasion] = useState<string>(existingReservation?.occasion || "None");
+  const [specialRequests, setSpecialRequests] = useState<string>(existingReservation?.specialRequests || "");
+
+  const guestOptions = [
+    { count: 1, label: "1 Guest (Solo)" },
+    { count: 2, label: "2 Guests (Couples)" },
+    { count: 3, label: "3 Guests" },
+    { count: 4, label: "4 Guests (Family)" },
+    { count: 6, label: "5-6 Guests" },
+    { count: 8, label: "8+ Private Table" },
+  ];
+
+  const timeSlots = [
+    "13:00 (Lunch)",
+    "14:00 (Late Lunch)",
+    "16:30 (Sunset Tea & Tapas)",
+    "19:00 (Early Dinner)",
+    "20:00 (Prime Dinner)",
+    "21:00 (Twilight Dinner)",
+    "22:00 (Cocktails & Late Lounge)"
+  ];
+
+  const seatingOptions = [
+    "🌟 Oceanfront Terrace",
+    "🕯️ Romantic Candlelit Window",
+    "🌿 Tropical Garden Pavilion",
+    "❄️ Air-Conditioned Dining Hall",
+    "🛋️ Private Lounge Cabana"
+  ];
+
+  const occasions = [
+    "None",
+    "🎂 Birthday Celebration",
+    "💍 Anniversary / Romantic Date",
+    "🟢 100% Pure Jain Dining",
+    "👶 Baby High Chair Required",
+    "🍷 Chef Tasting & Wine Pairing"
+  ];
+
+  const handleConfirm = () => {
+    const reservation: TableReservation = {
+      id: existingReservation?.id || `RES-${Math.floor(1000 + Math.random() * 9000)}`,
+      venueId: item.id,
+      venueName: item.name,
+      guests,
+      timeSlot,
+      seatingArea,
+      occasion,
+      specialRequests,
+      reservedAt: "Today"
+    };
+    onConfirm(reservation);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in" onClick={onClose}>
+      <div className="relative flex flex-col w-full max-w-lg max-h-[92vh] overflow-hidden rounded-3xl border border-[#d5b582]/40 bg-[#122020] text-[#ebe7dc] shadow-2xl" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="border-b border-[#d5b582]/20 bg-gradient-to-r from-[#192b29] via-[#243936] to-[#192b29] p-5">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner">
+                {item.subCategory === "Bar" ? <Wine size={22} /> : <Utensils size={22} />}
+              </div>
+              <div>
+                <span className="rounded-md bg-[#d5b582]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#d5b582]">
+                  {existingReservation ? "Modify Table Reservation" : "Table Reservation Today"}
+                </span>
+                <h2 className="mt-1 font-serif text-xl font-semibold text-[#fcf5e8]">{item.name}</h2>
+                <div className="mt-1 text-xs text-[#8ca6a1]">
+                  📍 {item.location} · ⏰ Today Reservation
+                </div>
+              </div>
+            </div>
+            <button className="grid h-8 w-8 place-items-center rounded-full bg-white/5 text-[#8ca6a1] hover:bg-white/10 hover:text-white" onClick={onClose}>
+              ✕
+            </button>
+          </div>
+        </div>
+
+        {/* Existing active reservation banner if already reserved today */}
+        {existingReservation && (
+          <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-5 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-300">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Current Status: Reserved Today at {existingReservation.timeSlot} ({existingReservation.guests} Guests)</span>
+            </div>
+            {onCancelReservation && (
+              <button
+                onClick={() => onCancelReservation(item.id)}
+                className="text-[11px] font-bold text-red-300 underline hover:text-red-200"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Modal Form Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar-thin">
+          {/* Party Size / Guests Selector */}
+          <div>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">
+                1. Number of Guests (Party Size)
+              </label>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setGuests(g => Math.max(1, g - 1))}
+                  className="grid h-6 w-6 place-items-center rounded-md border border-white/10 bg-white/5 text-xs font-bold hover:bg-white/10"
+                >
+                  -
+                </button>
+                <span className="font-mono text-sm font-bold text-[#fcf5e8] px-1">{guests} {guests === 1 ? "Guest" : "Guests"}</span>
+                <button
+                  type="button"
+                  onClick={() => setGuests(g => Math.min(20, g + 1))}
+                  className="grid h-6 w-6 place-items-center rounded-md border border-white/10 bg-white/5 text-xs font-bold hover:bg-white/10"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div className="mt-2.5 grid grid-cols-3 gap-2">
+              {guestOptions.map(opt => (
+                <button
+                  key={opt.count}
+                  type="button"
+                  onClick={() => setGuests(opt.count)}
+                  className={`rounded-xl border py-2 px-2 text-center text-xs font-semibold transition-all ${
+                    guests === opt.count
+                      ? "border-[#d5b582] bg-[#d5b582] text-[#122020] font-bold shadow-md"
+                      : "border-white/8 bg-white/[.03] text-[#c7d9d3] hover:bg-white/[.07]"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Dining Time Slot (Today) */}
+          <div>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block">
+              2. Dining Time (Today · 26 Sep)
+            </label>
+            <div className="mt-2.5 grid grid-cols-2 gap-2">
+              {timeSlots.map(slot => (
+                <button
+                  key={slot}
+                  type="button"
+                  onClick={() => setTimeSlot(slot)}
+                  className={`rounded-xl border py-2 px-3 text-left text-xs font-semibold transition-all flex items-center justify-between ${
+                    timeSlot === slot
+                      ? "border-[#d5b582] bg-[#d5b582]/20 text-[#fcf5e8] font-bold shadow-sm"
+                      : "border-white/8 bg-white/[.03] text-[#c7d9d3] hover:bg-white/[.07]"
+                  }`}
+                >
+                  <span>{slot}</span>
+                  {timeSlot === slot && <Check size={14} className="text-[#d5b582]" />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Seating Area Preference */}
+          <div>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block">
+              3. Preferred Seating Atmosphere
+            </label>
+            <div className="mt-2.5 space-y-2">
+              {seatingOptions.map(seat => (
+                <button
+                  key={seat}
+                  type="button"
+                  onClick={() => setSeatingArea(seat)}
+                  className={`w-full rounded-xl border py-2 px-3.5 text-left text-xs font-semibold transition-all flex items-center justify-between ${
+                    seatingArea === seat
+                      ? "border-[#d5b582] bg-[#d5b582]/15 text-[#fcf5e8] font-bold"
+                      : "border-white/8 bg-white/[.03] text-[#c7d9d3] hover:bg-white/[.07]"
+                  }`}
+                >
+                  <span>{seat}</span>
+                  {seatingArea === seat && <span className="text-xs text-[#d5b582]">Selected</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Occasion & Dietary */}
+          <div>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block">
+              4. Special Occasion / Dietary Requirement
+            </label>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {occasions.map(occ => (
+                <button
+                  key={occ}
+                  type="button"
+                  onClick={() => setOccasion(occ)}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                    occasion === occ
+                      ? "bg-[#d5b582] text-[#122020] font-bold"
+                      : "border border-white/10 bg-white/[.04] text-[#a7c2bc] hover:bg-white/[.08]"
+                  }`}
+                >
+                  {occ}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Special Request Notes */}
+          <div>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block">
+              5. Custom Notes (Optional)
+            </label>
+            <input
+              type="text"
+              value={specialRequests}
+              onChange={e => setSpecialRequests(e.target.value)}
+              placeholder="e.g. Quiet corner table, anniversary flower petals..."
+              className="mt-2 w-full rounded-xl border border-white/10 bg-white/[.03] px-3.5 py-2.5 text-xs text-[#fcf5e8] placeholder:text-[#6a807b] focus:border-[#d5b582] focus:outline-none"
+            />
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="border-t border-[#d5b582]/20 bg-[#162928] p-4 flex items-center justify-between gap-3">
+          <button className="sr-button-quiet text-xs" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            className="sr-button flex-1 flex items-center justify-center gap-2"
+            onClick={handleConfirm}
+          >
+            <CheckCircle2 size={16} />
+            <span>
+              {existingReservation ? "Update Reservation" : `Confirm Table for ${guests} ${guests === 1 ? "Guest" : "Guests"}`}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
   const { weather } = useLiveWeather();
   const [selectedCategory, setSelectedCategory] = useState<"All" | "Food & Drinks" | "Indoor Games" | "Outdoor Games" | "Wellness">("All");
   const [bookingItem, setBookingItem] = useState<any>(null);
+  const [tableReservations, setTableReservations] = useState<Record<string, TableReservation>>({});
   const [showCoveMenu, setShowCoveMenu] = useState<boolean>(false);
   const [showBarMenu, setShowBarMenu] = useState<boolean>(false);
   const [showVerandahMenu, setShowVerandahMenu] = useState<boolean>(false);
@@ -2356,33 +2633,59 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
 
             {/* Booking Modal / Dialog if an item is selected */}
             {bookingItem && (
-              <div className="mt-5 rounded-2xl border border-[#d5b582]/30 bg-[#d5b582]/[.08] p-4 animate-in fade-in">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="rounded-md bg-[#d5b582]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#d5b582]">
-                      {bookingItem.subCategory}
-                    </span>
-                    <h3 className="mt-2 font-serif text-lg font-semibold text-[#fcf5e8]">{bookingItem.name}</h3>
-                    <p className="sr-muted mt-1 text-xs leading-5">{bookingItem.details}</p>
-                    <div className="mt-3 flex items-center gap-3 text-xs text-[#d5b582]">
-                      <span className="font-semibold">{bookingItem.price}</span>
-                      <span>·</span>
-                      <span className="sr-muted">{bookingItem.location}</span>
+              bookingItem.gameType === "Food & Drinks" ? (
+                <TableReservationModal
+                  item={bookingItem}
+                  existingReservation={tableReservations[bookingItem.id]}
+                  onClose={() => setBookingItem(null)}
+                  onConfirm={(res) => {
+                    setTableReservations(prev => ({ ...prev, [res.venueId]: res }));
+                    setBookingItem(null);
+                    toast.success("Table Reserved Successfully!", {
+                      description: `Reserved for ${res.guests} ${res.guests === 1 ? 'guest' : 'guests'} at ${res.venueName} · ${res.timeSlot} (${res.seatingArea})`
+                    });
+                  }}
+                  onCancelReservation={(venueId) => {
+                    setTableReservations(prev => {
+                      const next = { ...prev };
+                      delete next[venueId];
+                      return next;
+                    });
+                    setBookingItem(null);
+                    toast.info("Reservation Cancelled", {
+                      description: "Your table reservation for today has been cancelled."
+                    });
+                  }}
+                />
+              ) : (
+                <div className="mt-5 rounded-2xl border border-[#d5b582]/30 bg-[#d5b582]/[.08] p-4 animate-in fade-in">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="rounded-md bg-[#d5b582]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#d5b582]">
+                        {bookingItem.subCategory}
+                      </span>
+                      <h3 className="mt-2 font-serif text-lg font-semibold text-[#fcf5e8]">{bookingItem.name}</h3>
+                      <p className="sr-muted mt-1 text-xs leading-5">{bookingItem.details}</p>
+                      <div className="mt-3 flex items-center gap-3 text-xs text-[#d5b582]">
+                        <span className="font-semibold">{bookingItem.price}</span>
+                        <span>·</span>
+                        <span className="sr-muted">{bookingItem.location}</span>
+                      </div>
                     </div>
+                    <button className="sr-button-quiet text-xs" onClick={() => setBookingItem(null)}>
+                      ✕
+                    </button>
                   </div>
-                  <button className="sr-button-quiet text-xs" onClick={() => setBookingItem(null)}>
-                    ✕
-                  </button>
+                  <div className="mt-4 flex gap-2">
+                    <button className="sr-button flex-1" onClick={() => confirmBooking(bookingItem)}>
+                      Confirm Instant Booking
+                    </button>
+                    <button className="sr-button-quiet" onClick={() => setBookingItem(null)}>
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-                <div className="mt-4 flex gap-2">
-                  <button className="sr-button flex-1" onClick={() => confirmBooking(bookingItem)}>
-                    {bookingItem.gameType === "Food & Drinks" ? "Reserve Table / Order" : "Confirm Instant Booking"}
-                  </button>
-                  <button className="sr-button-quiet" onClick={() => setBookingItem(null)}>
-                    Cancel
-                  </button>
-                </div>
-              </div>
+              )
             )}
 
             {/* Amenities List Grouped with Sub-sections */}
@@ -2402,7 +2705,11 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                     {foodAndDrinks.map((item) => (
                       <div
                         key={item.id}
-                        className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#d5b582]/40 hover:bg-white/[.05] shadow-sm"
+                        className={`group relative rounded-2xl border p-4 transition-all hover:bg-white/[.05] shadow-sm ${
+                          tableReservations[item.id]
+                            ? "border-emerald-500/40 bg-emerald-950/[.12]"
+                            : "border-white/8 bg-white/[.025] hover:border-[#d5b582]/40"
+                        }`}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-start gap-3.5">
@@ -2424,10 +2731,32 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                               </div>
                             </div>
                           </div>
-                          <StatusChip tone={item.tone}>{item.state}</StatusChip>
+                          <StatusChip tone={tableReservations[item.id] ? "teal" : item.tone}>
+                            {tableReservations[item.id] ? "Table Booked" : item.state}
+                          </StatusChip>
                         </div>
+
+                        {/* Active Same-Day Reservation Indicator */}
+                        {tableReservations[item.id] && (
+                          <div className="mt-3 flex items-center justify-between rounded-xl border border-emerald-500/35 bg-emerald-500/[.10] px-3.5 py-2.5 text-xs text-emerald-200 animate-in fade-in">
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                              <span className="font-semibold text-emerald-300">
+                                Reserved Today at {tableReservations[item.id].timeSlot} ({tableReservations[item.id].guests} {tableReservations[item.id].guests === 1 ? "Guest" : "Guests"} · {tableReservations[item.id].seatingArea})
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">
+                              {tableReservations[item.id].id}
+                            </span>
+                          </div>
+                        )}
+
                         <div className="mt-3.5 flex items-center justify-between border-t border-white/6 pt-2.5">
-                          <span className="text-xs text-[#9eb6b0]">Complimentary table seating for in-house guests</span>
+                          <span className="text-xs text-[#9eb6b0]">
+                            {tableReservations[item.id]
+                              ? `Reserved for ${tableReservations[item.id].guests} guests · Click button to modify`
+                              : "Complimentary table seating for in-house guests"}
+                          </span>
                           <div className="flex items-center gap-2">
                             {item.id === "dining-1" && (
                               <button
@@ -2466,10 +2795,16 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                               </button>
                             )}
                             <button
-                              className="rounded-lg bg-[#d5b582]/20 px-3.5 py-1.5 text-xs font-semibold text-[#d5b582] transition-colors hover:bg-[#d5b582] hover:text-[#122020]"
+                              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all shadow-sm ${
+                                tableReservations[item.id]
+                                  ? "bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500 hover:text-[#122020] font-bold"
+                                  : "bg-[#d5b582]/20 text-[#d5b582] hover:bg-[#d5b582] hover:text-[#122020]"
+                              }`}
                               onClick={() => setBookingItem(item)}
                             >
-                              {item.subCategory === "Bar" ? "Reserve Lounge" : "Reserve Table"}
+                              {tableReservations[item.id]
+                                ? `✓ Reserved: Today @ ${tableReservations[item.id].timeSlot.split(' ')[0]} (${tableReservations[item.id].guests}p)`
+                                : item.subCategory === "Bar" ? "Reserve Lounge" : "Reserve Table"}
                             </button>
                           </div>
                         </div>
