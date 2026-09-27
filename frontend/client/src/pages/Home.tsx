@@ -1541,6 +1541,530 @@ function VerandahMenuModal({ onClose, onReserve }: { onClose: () => void; onRese
   );
 }
 
+function RasoiRoyalMenuModal({ onClose, onReserve }: { onClose: () => void; onReserve: () => void }) {
+  const [activePage, setActivePage] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8>(1);
+
+  const page1Items = [
+    {
+      name: "Maharaja Shahi Bhojan Royal Thali (14-Course Feast)",
+      tag: "👑 Royal Showpiece",
+      price: "₹850",
+      type: "Royal Grand Thali",
+      desc: "Lavish royal feast: Paneer Lababdar, Dal Baati Churma with pure ghee, Gatta Curry, Kaju Makhana, Missi Roti, Kesari Basmati Pulao, Dahi Bhalla, Smoked Chaas, and warm Malpua with Rabdi."
+    },
+    {
+      name: "Shekhawati Shudh Jain Royal Thali (Zero Onion/Garlic/Root Veg)",
+      tag: "🌿 100% Pure Jain",
+      price: "₹820",
+      type: "Jain Grand Thali",
+      desc: "Strict Jain specialty prepared in dedicated Jain vessels: Jain Paneer Makhani, Panchmel Dal, Kela Methi Nu Shaak, Moong Moghar, Phulkas with A2 Bilona Ghee, Saffron Rice & Kesari Rasmalai."
+    },
+    {
+      name: "Kathiyawadi Gujarati Swad Thali",
+      tag: "🟢 Gujarati Specialty",
+      price: "₹780",
+      type: "Regional Thali",
+      desc: "Authentic Gujarati spread: Sev Tameta Nu Shaak, Ringan No Olo (or Jain Dudhi Chana), Gujarati Khatti-Meethi Dal, hot Bajra Rotla with white butter, organic jaggery, and Kesar Shrikhand."
+    },
+    {
+      name: "Royal Kesar Pista Shikanji",
+      tag: "✨ Shahi Aperitif",
+      price: "₹220",
+      type: "Royal Refreshers",
+      desc: "Chilled hand-churned gondhoraj lime cooler infused with Kashmiri saffron strands, crushed green pistachios, black rock salt, and mint."
+    },
+    {
+      name: "Smoked Dhungari Chaas with Roasted Cumin",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹180",
+      type: "Royal Refreshers",
+      desc: "Fresh churned spiced buttermilk with crushed ginger (optional), roasted cumin, rock salt, and smoked with red-hot coconut charcoal and A2 cow ghee."
+    },
+    {
+      name: "Wild Kokum & Cumin Digestive Cooler",
+      tag: "🍷 Coastal Heritage",
+      price: "₹190",
+      type: "Royal Refreshers",
+      desc: "Fresh Goan wild kokum nectar brewed with roasted jeera, rock salt, black pepper, and sparkling spring soda."
+    }
+  ];
+
+  const page2Items = [
+    {
+      name: "Dahi Ke Shahi Kebab with Mint & Sonth (6-pc)",
+      tag: "👑 Royal Starter",
+      price: "₹520",
+      type: "Clay Oven Kebabs",
+      desc: "Silken spiced hung curd and chenna patties infused with green cardamom, mace, and saffron, pan-griddled in pure desi cow ghee."
+    },
+    {
+      name: "Tandoori Malai Broccoli Angare",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹540",
+      type: "Clay Oven Kebabs",
+      desc: "Tender broccoli florets steeped in rich cashew nut paste, cream cheese, green cardamom, and roasted over fragrant charcoal embers."
+    },
+    {
+      name: "Paneer Tikka Shahi Shashlik (Jain Available)",
+      tag: "🔥 Charcoal Tandoor",
+      price: "₹580",
+      type: "Clay Oven Kebabs",
+      desc: "Chunks of fresh malai cottage cheese marinated in Kashmiri deghi chili, hung curd, and cold-pressed mustard oil, tandoor-roasted with bell peppers."
+    },
+    {
+      name: "Bharwan Shakarkandi / Stuffed Tandoori Aloo Nazakat",
+      tag: "🥔 Clay Oven Roast",
+      price: "₹490",
+      type: "Clay Oven Kebabs",
+      desc: "Sweet potato / potato barrels stuffed with seasoned paneer, raisins, crushed cashews, and fresh herbs, glazed over charcoal with pomegranate reduction."
+    },
+    {
+      name: "Golden Sweet Corn & Water Chestnut Seekh (4-pc)",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹510",
+      type: "Clay Oven Kebabs",
+      desc: "Skewered patties made of crushed tender American sweet corn, crunchy water chestnuts, aromatic garam masala, and fresh coriander."
+    },
+    {
+      name: "Subz Hariyali Kebab with Raw Mango Dip",
+      tag: "🥗 Green Goodness",
+      price: "₹480",
+      type: "Clay Oven Kebabs",
+      desc: "Nutritious pan-seared patties of fresh spinach, green peas, raw banana mash, and mint, dusted with chaat masala."
+    }
+  ];
+
+  const page3Items = [
+    {
+      name: "Shahi Paneer Lababdar / Jain Paneer Makhani",
+      tag: "👑 Signature Curry",
+      price: "₹620",
+      type: "Shahi Gravies",
+      desc: "Fresh malai paneer cubes simmered in a velvety reduction of vine-ripened tomatoes, cashew nuts, and green cardamom, finished with kasuri methi and churned butter."
+    },
+    {
+      name: "Royal Khoya Kaju Curry in Saffron Gravy",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹660",
+      type: "Shahi Gravies",
+      desc: "Whole golden-roasted premium cashew nuts braised in a rich reduction of reduced milk mawa (khoya), saffron, white pepper, and royal spices."
+    },
+    {
+      name: "Dum Subz Handi / Jain Malai Kofta",
+      tag: "🍲 Clay Handi Special",
+      price: "₹580",
+      type: "Shahi Gravies",
+      desc: "Melt-in-mouth raw-banana and chenna kofta or seasonal garden vegetables slow-simmered in an earthen handi with an aromatic yellow cashew gravy."
+    },
+    {
+      name: "Dal Bukhara (24-Hour Charcoal Slow-Cooked)",
+      tag: "🔥 Legendary Lentils",
+      price: "₹520",
+      type: "Heritage Dal",
+      desc: "Whole black urad lentils slow-simmered for 24 hours over gentle charcoal embers with fresh tomato puree, dairy cream, and white butter."
+    },
+    {
+      name: "Panchmel Dal Tadka with A2 Desi Ghee Dhungar",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹460",
+      type: "Heritage Dal",
+      desc: "Five-lentil melange cooked with rock salt and turmeric, finished with an aromatic tempering of pure cow ghee, asafoetida (hing), and dry red chilies."
+    },
+    {
+      name: "Navratan Shahi Korma with Dried Fruits",
+      tag: "✨ Mild & Royal",
+      price: "₹640",
+      type: "Shahi Gravies",
+      desc: "Nine treasures of farm vegetables, paneer, pineapple, raisins, and nuts cooked in a fragrant cashew-cream and edible rosewater sauce."
+    }
+  ];
+
+  const page4Items = [
+    {
+      name: "Traditional Rajasthani Dal Baati Churma Platter",
+      tag: "👑 Heritage Legend",
+      price: "₹650",
+      type: "Regional Classics",
+      desc: "Crisp golden whole-wheat baatis dipped in warm desi ghee, served with spicy Panchmel Dal, tangy gatta curry, and cardamom almond churma."
+    },
+    {
+      name: "Mewari Gatta Curry in Spiced Dahi Gravy",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹540",
+      type: "Regional Classics",
+      desc: "Steamed tender gram flour rolls cooked in a rich, tempered Rajasthani yogurt sauce infused with ajwain and crushed coriander."
+    },
+    {
+      name: "Kathiyawadi Sev Tameta Nu Shaak (Jain Available)",
+      tag: "🍅 Gujarati Street Taste",
+      price: "₹480",
+      type: "Regional Classics",
+      desc: "Tangy-sweet tomato curry stewed with jaggery, cumin, mustard seeds, and topped with crunchy Bhavnagri chickpea sev."
+    },
+    {
+      name: "Surti Undhiyu with Methi Muthiya (Seasonal)",
+      tag: "🌿 Gujarati Specialty",
+      price: "₹580",
+      type: "Regional Classics",
+      desc: "Slow-braised winter vegetable medley with fried fenugreek dumplings, flat papdi beans, and freshly scraped coconut-sesame masala."
+    },
+    {
+      name: "Papad Mangodi ki Shahi Kadhi",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹460",
+      type: "Regional Classics",
+      desc: "Sun-dried moong dal mangodi dumplings and roasted Bikaneri papad cooked in a creamy buttermilk kadhi tempered with curry leaves and mustard."
+    },
+    {
+      name: "Marwari Pitor ki Sabzi",
+      tag: "✨ Royal Marwari",
+      price: "₹510",
+      type: "Regional Classics",
+      desc: "Diamond-shaped spiced besan cakes shallow-fried and simmered in an authentic rustic curd and mustard gravy."
+    }
+  ];
+
+  const page5Items = [
+    {
+      name: "Shahi Dum Subz Handi Biryani (with Burani Raita)",
+      tag: "👑 Royal Dum Pukht",
+      price: "₹580",
+      type: "Biryani & Rices",
+      desc: "Fragrant extra-long grain basmati rice layered with spiced vegetables, saffron milk, fresh mint, sealed in earthen handi with dough crust."
+    },
+    {
+      name: "Awadhi Jain Motia Paneer Pulao",
+      tag: "🌿 100% Pure Jain",
+      price: "₹550",
+      type: "Biryani & Rices",
+      desc: "Aromatic basmati rice tossed with delicate pearls of fresh malai paneer, green cardamom, whole cloves, and golden cashew nuts."
+    },
+    {
+      name: "Kashmiri Kesar & Dry Fruit Pulao",
+      tag: "✨ Sweet & Aromatic",
+      price: "₹590",
+      type: "Biryani & Rices",
+      desc: "Fragrant rice steeped in Pampore saffron broth, tossed with roasted almonds, cashews, walnuts, raisins, and fresh pomegranate arils."
+    },
+    {
+      name: "Jeera Butter Brown Basmati Rice",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹340",
+      type: "Biryani & Rices",
+      desc: "Steamed aged basmati grains tempered with cracked royal cumin seeds and clarified churned butter."
+    },
+    {
+      name: "Royal Moong Dal Khichdi with Bilona Ghee",
+      tag: "🥣 Comfort Classic",
+      price: "₹420",
+      type: "Biryani & Rices",
+      desc: "Slow-cooked yellow lentils and basmati rice tempered with cumin, hing, and generous dollop of pure Gir cow A2 bilona ghee."
+    },
+    {
+      name: "South Indian Curd Rice with Mustard Tadka",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹380",
+      type: "Biryani & Rices",
+      desc: "Soft rice mashed in fresh thick curd, tempered with mustard seeds, curry leaves, ginger, and ruby pomegranate pearls."
+    }
+  ];
+
+  const page6Items = [
+    {
+      name: "Amritsari Chur-Chur Paneer Kulcha",
+      tag: "👑 Clay Oven Special",
+      price: "₹240",
+      type: "Artisan Breads",
+      desc: "Flaky layered clay oven flatbread stuffed with spiced paneer, crushed coriander seeds, and served crushed with homemade white butter."
+    },
+    {
+      name: "Warqi Malai Paratha in Pure Desi Ghee",
+      tag: "🫓 Layered Paratha",
+      price: "₹180",
+      type: "Artisan Breads",
+      desc: "Multi-layered flaky whole wheat bread laminated with pure cow ghee and baked crisp in tandoor."
+    },
+    {
+      name: "Rajasthani Missi Roti with Fresh Desi Makhan",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹140",
+      type: "Artisan Breads",
+      desc: "Stone-ground gram flour and whole wheat flatbread infused with roasted ajwain, kasuri methi, topped with fresh white butter."
+    },
+    {
+      name: "Butter / Plain Tandoori Naan (Plain for Jain)",
+      tag: "🔥 Clay Oven",
+      price: "₹160",
+      type: "Artisan Breads",
+      desc: "Soft, pillowy leavened flatbread baked on the walls of clay tandoor, brushed with churned butter."
+    },
+    {
+      name: "Hand-Tossed Phulka with A2 Bilona Ghee (3-pc)",
+      tag: "🌿 100% Pure Jain",
+      price: "₹120",
+      type: "Artisan Breads",
+      desc: "Soft puffed whole wheat flatbreads freshly puffed on direct flame and brushed with warm Gir cow A2 ghee."
+    },
+    {
+      name: "Rustic Bajra / Makki Rotla with Organic Gud",
+      tag: "🌾 Heritage Grain",
+      price: "₹160",
+      type: "Artisan Breads",
+      desc: "Hand-patted pearl millet / yellow corn flatbread served hot off clay griddle with homemade butter and organic jaggery."
+    }
+  ];
+
+  const page7Items = [
+    {
+      name: "Dahi Bhalla Papdi Royal Chaat",
+      tag: "👑 Shahi Chaat",
+      price: "₹380",
+      type: "Chaats & Farshaan",
+      desc: "Pillow-soft lentil dumplings in sweet creamy yogurt topped with crispy papdi, roasted jeera, tamarind sonth, and pomegranate."
+    },
+    {
+      name: "Crispy Palak Patta Chaat with Sev",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹360",
+      type: "Chaats & Farshaan",
+      desc: "Flash-fried baby spinach leaves in crisp gram batter, drizzled with spiced curd, mint chutney, tamarind glaze, and sev."
+    },
+    {
+      name: "Khaman Dhokla & Khandvi Duo Platter",
+      tag: "🟡 Gujarati Farshaan",
+      price: "₹320",
+      type: "Chaats & Farshaan",
+      desc: "Steamed spongy nylon khaman dhokla and rolled spiced besan khandvi tempered with mustard seeds and fresh grated coconut."
+    },
+    {
+      name: "Smoked Boondi & Roasted Cumin Raita",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹220",
+      type: "Artisanal Raitas",
+      desc: "Whipped creamy curd with crisp gram flour boondi, rock salt, and aromatic dhungar charcoal smoke."
+    },
+    {
+      name: "Anardana & Charred Pineapple Raita",
+      tag: "🍍 Fruity & Tangy",
+      price: "₹260",
+      type: "Artisanal Raitas",
+      desc: "Chilled yogurt mixed with roasted spiced pineapple cubes, black salt, and dried wild pomegranate seed powder."
+    },
+    {
+      name: "Jain Raw Banana & Sweet Corn Bhel",
+      tag: "🌿 100% Pure Jain",
+      price: "₹290",
+      type: "Chaats & Farshaan",
+      desc: "Crunchy puffed rice, crisp raw banana wafers, steamed sweet corn, roasted peanuts, and tangy raw mango sonth dressing."
+    }
+  ];
+
+  const page8Items = [
+    {
+      name: "Kesari Rasmalai with Saffron Caviar (2-pc)",
+      tag: "👑 Royal Mithai",
+      price: "₹360",
+      type: "Shahi Desserts",
+      desc: "Delicate fresh chenna discs soaked in thickened saffron-cardamom milk, topped with pistachio slivers and molecular saffron pearls."
+    },
+    {
+      name: "Moong Dal Halwa in A2 Bilona Ghee",
+      tag: "🌿 Pure Jain / Veg",
+      price: "₹380",
+      type: "Shahi Desserts",
+      desc: "Slow-roasted split yellow lentils in pure cow ghee and reduced milk, served piping hot with slivered almonds and edible silver leaf."
+    },
+    {
+      name: "Awadhi Shahi Tukda with Malai Rabdi",
+      tag: "✨ Awadhi Heritage",
+      price: "₹350",
+      type: "Shahi Desserts",
+      desc: "Ghee-crisped brioche triangles steeped in saffron syrup, coated with thick slow-reduced rabdi and dry rose petals."
+    },
+    {
+      name: "Royal Malai Kulfi Falooda with Rose Nectar",
+      tag: "🍨 Pot-Churned Kulfi",
+      price: "₹340",
+      type: "Shahi Desserts",
+      desc: "Traditional pot-churned condensed milk kulfi served over basil seeds, silky corn vermicelli, and pure organic rose syrup."
+    },
+    {
+      name: "Warm Gulab Jamun Stuffed with Gulkand (2-pc)",
+      tag: "🌹 Floral Sweet",
+      price: "₹280",
+      type: "Shahi Desserts",
+      desc: "Soft mawa dumplings filled with aromatic damask rose petal preserve, fried golden and soaked in green cardamom syrup."
+    },
+    {
+      name: "Alphonso Mango Kesar Shrikhand with Puri",
+      tag: "🥭 Seasonal Delight",
+      price: "₹320",
+      type: "Shahi Desserts",
+      desc: "Velvety hung yogurt whisked with pure Ratnagiri Alphonso mango pulp, saffron, and served with mini warm puris."
+    }
+  ];
+
+  const pageMap = {
+    1: { title: "👑 Page 1: Royal Thali Experiences & Shahi Aperitifs", items: page1Items, subtitle: "Maharaja Feast, Shekhawati Jain Thali, Kathiyawadi & Kesar Shikanji" },
+    2: { title: "🍢 Page 2: Clay Oven Tandoor & Charcoal Kebabs", items: page2Items, subtitle: "Dahi Ke Kebab, Malai Broccoli, Paneer Shashlik & Corn Seekh" },
+    3: { title: "🍲 Page 3: Shahi Gravies, Paneer & Mughlai Curries", items: page3Items, subtitle: "Paneer Lababdar, Khoya Kaju, 24hr Dal Bukhara & Shahi Korma" },
+    4: { title: "🌶️ Page 4: Rajasthani, Marwari & Gujarati Classics", items: page4Items, subtitle: "Dal Baati Churma, Mewari Gatta, Sev Tameta & Undhiyu" },
+    5: { title: "🥘 Page 5: Handi Biryanis, Pulaos & Dum Pukht Rices", items: page5Items, subtitle: "Shahi Dum Biryani, Jain Motia Pulao, Kashmiri Kesar Rice & Khichdi" },
+    6: { title: "🫓 Page 6: Artisan Tandoori Breads & Kulchas", items: page6Items, subtitle: "Amritsari Chur-Chur, Warqi Paratha, Missi Roti & A2 Phulkas" },
+    7: { title: "🥗 Page 7: Royal Chaats, Farshaan & Artisanal Raitas", items: page7Items, subtitle: "Dahi Papdi Chaat, Palak Patta, Dhokla Khandvi & Smoked Raita" },
+    8: { title: "🍨 Page 8: Shahi Mithais, Halwas & Royal Kulfi Bar", items: page8Items, subtitle: "Kesari Rasmalai, Moong Dal Halwa, Shahi Tukda & Malai Kulfi Falooda" }
+  };
+
+  const currentPageData = pageMap[activePage];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in" onClick={onClose}>
+      <div className="relative flex flex-col w-full max-w-2xl max-h-[92vh] overflow-hidden rounded-3xl border border-[#8fd6c2]/40 bg-[#10221f] text-[#ebe7dc] shadow-2xl" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="border-b border-[#8fd6c2]/20 bg-gradient-to-r from-[#122b27] via-[#1a3832] to-[#122b27] p-5">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#8fd6c2]/15 text-[#8fd6c2] border border-[#8fd6c2]/30 shadow-inner">
+                <Utensils size={22} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-[#8fd6c2]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#8fd6c2]">
+                    🟢 100% Pure Veg & Jain Menu (8-Pages)
+                  </span>
+                  <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-bold text-emerald-300">
+                    Separate Kitchen
+                  </span>
+                </div>
+                <h2 className="mt-1 font-serif text-2xl font-semibold text-[#fcf5e8]">Rasoi Royal Pure Vegetarian & Jain Dining</h2>
+                <div className="mt-1 flex items-center gap-3 text-xs text-[#8ca6a1]">
+                  <span>📍 Heritage Garden Pavilion</span>
+                  <span>·</span>
+                  <span>👑 Maharaj Chhagan Lal</span>
+                  <span>·</span>
+                  <span className="text-[#8fd6c2]">Zero Non-Veg Cross-Contamination</span>
+                </div>
+              </div>
+            </div>
+            <button className="grid h-8 w-8 place-items-center rounded-full bg-white/5 text-[#8ca6a1] hover:bg-white/10 hover:text-white" onClick={onClose}>
+              ✕
+            </button>
+          </div>
+
+          {/* 8-Page Navigation Bar */}
+          <div className="mt-4 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {[
+              { p: 1, label: "👑 Thalis & Drinks" },
+              { p: 2, label: "🍢 Tandoor & Kebabs" },
+              { p: 3, label: "🍲 Shahi Gravies" },
+              { p: 4, label: "🌶️ Regional Classics" },
+              { p: 5, label: "🥘 Biryani & Rice" },
+              { p: 6, label: "🫓 Breads & Kulchas" },
+              { p: 7, label: "🥗 Chaat & Raita" },
+              { p: 8, label: "🍨 Mithai & Kulfi" }
+            ].map(({ p, label }) => (
+              <button
+                key={p}
+                onClick={() => setActivePage(p as any)}
+                className={`shrink-0 rounded-xl px-2.5 py-1.5 text-xs font-semibold transition-all ${
+                  activePage === p
+                    ? "bg-[#8fd6c2] text-[#10221f] shadow-md font-bold"
+                    : "border border-white/8 bg-black/30 text-[#8ca6a1] hover:text-[#ebe7dc] hover:bg-white/5"
+                }`}
+              >
+                <span>P{p}: {label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Menu Items Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-3.5 scrollbar-thin">
+          <div className="flex items-center justify-between pb-1 border-b border-white/5">
+            <div>
+              <div className="text-xs uppercase tracking-wider text-[#8fd6c2] font-semibold">
+                {currentPageData.title}
+              </div>
+              <div className="text-[11px] text-[#8ca6a1] mt-0.5">{currentPageData.subtitle}</div>
+            </div>
+            <span className="text-[10px] text-[#8ca6a1] font-mono">Page {activePage}/8</span>
+          </div>
+
+          {currentPageData.items.map((item, idx) => (
+            <div
+              key={idx}
+              className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#8fd6c2]/40 hover:bg-white/[.05]"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded bg-[#8fd6c2]/15 px-2 py-0.5 text-[10px] font-bold text-[#8fd6c2]">
+                      {item.tag}
+                    </span>
+                    <span className="text-[10px] text-[#8ca6a1] font-mono">[{item.type}]</span>
+                  </div>
+                  <h3 className="mt-1.5 font-serif text-base font-semibold text-[#fcf5e8] group-hover:text-[#8fd6c2] transition-colors">
+                    {item.name}
+                  </h3>
+                  <p className="sr-muted mt-1 text-xs leading-relaxed">{item.desc}</p>
+                </div>
+                <div className="flex flex-col items-end shrink-0">
+                  <span className="font-mono text-base font-bold text-[#8fd6c2]">{item.price}</span>
+                  <button
+                    onClick={() => {
+                      toast.success(`Selected for Pure Veg Order: ${item.name}`, {
+                        description: `Price: ${item.price} · Added to order preference`
+                      });
+                    }}
+                    className="mt-2 rounded-md bg-white/5 px-2 py-1 text-[10px] font-medium text-[#c4ded6] hover:bg-[#8fd6c2]/20 hover:text-[#8fd6c2]"
+                  >
+                    + Note for Table
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer with 8-Page Slider Controls & Action */}
+        <div className="border-t border-[#8fd6c2]/20 bg-[#132824] p-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <button
+              disabled={activePage === 1}
+              onClick={() => setActivePage((p) => Math.max(1, p - 1) as any)}
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold disabled:opacity-30 hover:bg-white/5"
+            >
+              ← Prev
+            </button>
+            <span className="font-mono text-xs text-[#8fd6c2]">Page {activePage} of 8</span>
+            <button
+              disabled={activePage === 8}
+              onClick={() => setActivePage((p) => Math.min(8, p + 1) as any)}
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold disabled:opacity-30 hover:bg-white/5"
+            >
+              Next →
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="sr-button-quiet text-xs" onClick={onClose}>
+              Close Menu
+            </button>
+            <button
+              className="sr-button"
+              onClick={() => {
+                onClose();
+                onReserve();
+              }}
+            >
+              Reserve Table For This Menu <ArrowRight size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
   const { weather } = useLiveWeather();
   const [selectedCategory, setSelectedCategory] = useState<"All" | "Food & Drinks" | "Indoor Games" | "Outdoor Games" | "Wellness">("All");
@@ -1548,6 +2072,7 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
   const [showCoveMenu, setShowCoveMenu] = useState<boolean>(false);
   const [showBarMenu, setShowBarMenu] = useState<boolean>(false);
   const [showVerandahMenu, setShowVerandahMenu] = useState<boolean>(false);
+  const [showRasoiMenu, setShowRasoiMenu] = useState<boolean>(false);
 
   const foodAndDrinks = [
     {
@@ -1878,6 +2403,15 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                                 <span>View Menu</span>
                               </button>
                             )}
+                            {item.id === "pureveg-1" && (
+                              <button
+                                className="flex items-center gap-1.5 rounded-lg border border-[#8fd6c2]/50 bg-[#8fd6c2]/[.08] px-2.5 py-1 text-[11px] font-semibold text-[#8fd6c2] transition-all hover:bg-[#8fd6c2]/20 hover:border-[#8fd6c2] shadow-sm"
+                                onClick={() => setShowRasoiMenu(true)}
+                              >
+                                <BookOpen size={12} className="text-[#8fd6c2]" />
+                                <span>View Pure Veg Menu</span>
+                              </button>
+                            )}
                             <button
                               className="rounded-lg bg-[#d5b582]/15 px-3 py-1 text-[11px] font-semibold text-[#d5b582] transition-colors hover:bg-[#d5b582] hover:text-[#122020]"
                               onClick={() => setBookingItem(item)}
@@ -2088,6 +2622,15 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
           onReserve={() => {
             setShowVerandahMenu(false);
             setBookingItem(foodAndDrinks.find(f => f.id === "brasserie-1") || foodAndDrinks[2]);
+          }}
+        />
+      )}
+      {showRasoiMenu && (
+        <RasoiRoyalMenuModal
+          onClose={() => setShowRasoiMenu(false)}
+          onReserve={() => {
+            setShowRasoiMenu(false);
+            setBookingItem(foodAndDrinks.find(f => f.id === "pureveg-1") || foodAndDrinks[3]);
           }}
         />
       )}
