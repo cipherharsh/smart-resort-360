@@ -1,5 +1,8 @@
 // frontend/client/src/lib/api.ts
-export const API_BASE = ""; // Uses relative paths proxied by Vite or direct host
+export const API_BASE =
+  (import.meta.env.VITE_API_URL as string) ||
+  (import.meta.env.VITE_BACKEND_URL as string) ||
+  ""; // Uses relative paths proxied by Vite, direct host or deployed backend
 
 export interface UserToken {
   access_token: string;
