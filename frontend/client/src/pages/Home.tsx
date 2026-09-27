@@ -166,7 +166,7 @@ function Entry({onEnter}:{onEnter:()=>void}) {
               filter: "saturate(1.02) contrast(1.02) brightness(0.96)",
               opacity: isCurrent ? 1 : 0,
               zIndex: isCurrent ? 2 : isPrevious ? 1 : 0,
-              transition: "opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)",
+              transition: "opacity 900ms cubic-bezier(0.4, 0, 0.2, 1)",
               transform: "translateZ(0)",
               willChange: isVisible ? "opacity" : "auto",
               pointerEvents: "none"
@@ -209,7 +209,7 @@ function Entry({onEnter}:{onEnter:()=>void}) {
           <StatusChip tone="teal"><span className="text-xs font-bold text-white tracking-wide">Live environment</span></StatusChip>
           <span className="font-mono text-xs font-bold text-white/90 drop-shadow">v0.9.4</span>
         </div>
-        <div className="relative mt-4 min-h-[58px]">
+        <div className="relative mt-4 min-h-[64px]">
           {RESORT_HERO_IMAGES.map((hero, idx) => {
             const isCurrent = idx === imgIndex;
             const isPrevious = idx === prevIndex && prevIndex !== imgIndex;
@@ -219,14 +219,12 @@ function Entry({onEnter}:{onEnter:()=>void}) {
             return (
               <p
                 key={hero.title}
-                className={`font-serif text-[23px] leading-tight text-white font-semibold drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] ${
-                  isCurrent ? "relative" : "absolute inset-0"
-                }`}
+                className="absolute inset-x-0 top-0 font-serif text-[23px] leading-tight text-white font-semibold drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)]"
                 style={{
                   opacity: isCurrent ? 1 : 0,
-                  transform: isCurrent ? "translateY(0)" : "translateY(-4px)",
-                  transition: "opacity 800ms cubic-bezier(0.4, 0, 0.2, 1), transform 800ms cubic-bezier(0.4, 0, 0.2, 1)",
-                  willChange: "opacity, transform",
+                  zIndex: isCurrent ? 2 : 1,
+                  transition: "opacity 900ms cubic-bezier(0.4, 0, 0.2, 1)",
+                  willChange: "opacity",
                   pointerEvents: isCurrent ? "auto" : "none",
                 }}
               >
