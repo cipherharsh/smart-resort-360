@@ -2144,45 +2144,47 @@ function TableReservationModal({
   onCancelReservation?: (venueId: string) => void;
 }) {
   const [guests, setGuests] = useState<number>(existingReservation ? existingReservation.guests : 2);
-  const [timeSlot, setTimeSlot] = useState<string>(existingReservation ? existingReservation.timeSlot : "20:00 (Prime Dinner)");
-  const [seatingArea, setSeatingArea] = useState<string>(existingReservation ? existingReservation.seatingArea : "🌟 Oceanfront Terrace");
-  const [occasion, setOccasion] = useState<string>(existingReservation?.occasion || "None");
+  const [timeSlot, setTimeSlot] = useState<string>(existingReservation ? existingReservation.timeSlot : "20:30 (Prime Royal Dinner)");
+  const [seatingArea, setSeatingArea] = useState<string>(existingReservation ? existingReservation.seatingArea : "Oceanfront Terrace");
+  const [occasion, setOccasion] = useState<string>(existingReservation?.occasion || "Casual Dining");
   const [specialRequests, setSpecialRequests] = useState<string>(existingReservation?.specialRequests || "");
 
   const guestOptions = [
-    { count: 1, label: "1 Guest (Solo)" },
-    { count: 2, label: "2 Guests (Couples)" },
-    { count: 3, label: "3 Guests" },
-    { count: 4, label: "4 Guests (Family)" },
-    { count: 6, label: "5-6 Guests" },
-    { count: 8, label: "8+ Private Table" },
+    { count: 1, label: "1 Guest", sub: "Solo Dining" },
+    { count: 2, label: "2 Guests", sub: "Couples / Date" },
+    { count: 3, label: "3 Guests", sub: "Small Group" },
+    { count: 4, label: "4 Guests", sub: "Family Table" },
+    { count: 6, label: "5-6 Guests", sub: "Group Dining" },
+    { count: 8, label: "8+ Guests", sub: "Grand Private" },
   ];
 
   const timeSlots = [
-    "13:00 (Lunch)",
-    "14:00 (Late Lunch)",
-    "16:30 (Sunset Tea & Tapas)",
-    "19:00 (Early Dinner)",
-    "20:00 (Prime Dinner)",
-    "21:00 (Twilight Dinner)",
-    "22:00 (Cocktails & Late Lounge)"
+    { time: "12:30", label: "Lunch Service", period: "Afternoon" },
+    { time: "14:00", label: "Late Lunch", period: "Afternoon" },
+    { time: "16:30", label: "Sunset Tea & Tapas", period: "Evening" },
+    { time: "18:30", label: "Sundowner Cocktails", period: "Evening" },
+    { time: "19:30", label: "Candlelight Dinner", period: "Dinner" },
+    { time: "20:30", label: "Prime Royal Dinner", period: "Dinner" },
+    { time: "21:30", label: "Twilight Feast", period: "Night" },
+    { time: "22:30", label: "Late Lounge & Bar", period: "Late Night" }
   ];
 
   const seatingOptions = [
-    "🌟 Oceanfront Terrace",
-    "🕯️ Romantic Candlelit Window",
-    "🌿 Tropical Garden Pavilion",
-    "❄️ Air-Conditioned Dining Hall",
-    "🛋️ Private Lounge Cabana"
+    { name: "Oceanfront Terrace", desc: "Panoramic beach view & cool ocean breeze", icon: "🌊" },
+    { name: "Candlelit Window", desc: "Intimate romantic sunset & mood glow", icon: "🕯️" },
+    { name: "Garden Pavilion", desc: "Lush tropical open-air gazebo seating", icon: "🌿" },
+    { name: "Royal AC Dining Hall", desc: "Quiet, air-conditioned luxury seating", icon: "❄️" },
+    { name: "Private Lounge Cabana", desc: "Exclusive VIP curtained booth", icon: "🛋️" },
+    { name: "Chef's Live Counter", desc: "Front-row view of live grills & kitchen", icon: "🔥" }
   ];
 
   const occasions = [
-    "None",
-    "🎂 Birthday Celebration",
-    "💍 Anniversary / Romantic Date",
-    "🟢 100% Pure Jain Dining",
-    "👶 Baby High Chair Required",
-    "🍷 Chef Tasting & Wine Pairing"
+    { label: "Casual Dining", icon: "✨" },
+    { label: "Birthday Celebration", icon: "🎂" },
+    { label: "Anniversary / Date", icon: "💍" },
+    { label: "100% Pure Jain Table", icon: "🟢" },
+    { label: "Baby High Chair Required", icon: "👶" },
+    { label: "Chef Special / Wine Pairing", icon: "🍷" }
   ];
 
   const handleConfirm = () => {
@@ -2201,22 +2203,24 @@ function TableReservationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in" onClick={onClose}>
-      <div className="relative flex flex-col w-full max-w-lg max-h-[92vh] overflow-hidden rounded-3xl border border-[#d5b582]/40 bg-[#122020] text-[#ebe7dc] shadow-2xl" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4 animate-in fade-in" onClick={onClose}>
+      <div className="relative flex flex-col w-full max-w-2xl max-h-[92vh] overflow-hidden rounded-3xl border border-[#d5b582]/40 bg-[#11211f] text-[#ebe7dc] shadow-2xl" onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="border-b border-[#d5b582]/20 bg-gradient-to-r from-[#192b29] via-[#243936] to-[#192b29] p-5">
+        <div className="border-b border-[#d5b582]/20 bg-gradient-to-r from-[#172a27] via-[#223935] to-[#172a27] px-6 py-5 sm:px-8">
           <div className="flex items-start justify-between">
-            <div className="flex items-center gap-3">
-              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner">
-                {item.subCategory === "Bar" ? <Wine size={22} /> : <Utensils size={22} />}
+            <div className="flex items-center gap-3.5">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner shrink-0">
+                {item.subCategory === "Bar" ? <Wine size={24} /> : <Utensils size={24} />}
               </div>
               <div>
-                <span className="rounded-md bg-[#d5b582]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#d5b582]">
-                  {existingReservation ? "Modify Table Reservation" : "Table Reservation Today"}
+                <span className="inline-block rounded-md bg-[#d5b582]/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#d5b582]">
+                  {existingReservation ? "Modify Table Reservation" : "Table Reservation · Today"}
                 </span>
-                <h2 className="mt-1 font-serif text-xl font-semibold text-[#fcf5e8]">{item.name}</h2>
-                <div className="mt-1 text-xs text-[#8ca6a1]">
-                  📍 {item.location} · ⏰ Today Reservation
+                <h2 className="mt-1 font-serif text-xl sm:text-2xl font-semibold text-[#fcf5e8]">{item.name}</h2>
+                <div className="mt-1 flex items-center gap-2 text-xs text-[#8ca6a1]">
+                  <span>📍 {item.location}</span>
+                  <span>·</span>
+                  <span className="text-[#d5b582] font-medium">⏰ Today's Service</span>
                 </div>
               </div>
             </div>
@@ -2228,164 +2232,212 @@ function TableReservationModal({
 
         {/* Existing active reservation banner if already reserved today */}
         {existingReservation && (
-          <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-5 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-300">
+          <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-6 sm:px-8 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2.5 text-xs font-semibold text-emerald-300">
               <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Current Status: Reserved Today at {existingReservation.timeSlot} ({existingReservation.guests} Guests)</span>
+              <span>Current Booking: Reserved Today at {existingReservation.timeSlot} ({existingReservation.guests} Guests · {existingReservation.seatingArea})</span>
             </div>
             {onCancelReservation && (
               <button
                 onClick={() => onCancelReservation(item.id)}
-                className="text-[11px] font-bold text-red-300 underline hover:text-red-200"
+                className="text-xs font-bold text-red-300 underline hover:text-red-200"
               >
-                Cancel
+                Cancel Booking
               </button>
             )}
           </div>
         )}
 
-        {/* Modal Form Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar-thin">
-          {/* Party Size / Guests Selector */}
+        {/* Modal Form Scrollable Content with balanced padding */}
+        <div className="flex-1 overflow-y-auto px-6 sm:px-8 py-6 space-y-6 scrollbar-thin">
+          {/* 1. Party Size / Guests Selector */}
           <div>
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">
-                1. Number of Guests (Party Size)
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] flex items-center gap-1.5">
+                <span>1. Party Size (Number of Guests)</span>
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/25 px-2 py-1">
                 <button
                   type="button"
                   onClick={() => setGuests(g => Math.max(1, g - 1))}
-                  className="grid h-6 w-6 place-items-center rounded-md border border-white/10 bg-white/5 text-xs font-bold hover:bg-white/10"
+                  className="grid h-6 w-6 place-items-center rounded-lg bg-white/10 text-xs font-bold text-[#c7d9d3] hover:bg-[#d5b582] hover:text-[#122020] transition-colors"
                 >
                   -
                 </button>
-                <span className="font-mono text-sm font-bold text-[#fcf5e8] px-1">{guests} {guests === 1 ? "Guest" : "Guests"}</span>
+                <span className="font-mono text-xs font-bold text-[#fcf5e8] px-1 min-w-[70px] text-center">
+                  {guests} {guests === 1 ? "Guest" : "Guests"}
+                </span>
                 <button
                   type="button"
                   onClick={() => setGuests(g => Math.min(20, g + 1))}
-                  className="grid h-6 w-6 place-items-center rounded-md border border-white/10 bg-white/5 text-xs font-bold hover:bg-white/10"
+                  className="grid h-6 w-6 place-items-center rounded-lg bg-white/10 text-xs font-bold text-[#c7d9d3] hover:bg-[#d5b582] hover:text-[#122020] transition-colors"
                 >
                   +
                 </button>
               </div>
             </div>
-            <div className="mt-2.5 grid grid-cols-3 gap-2">
-              {guestOptions.map(opt => (
-                <button
-                  key={opt.count}
-                  type="button"
-                  onClick={() => setGuests(opt.count)}
-                  className={`rounded-xl border py-2 px-2 text-center text-xs font-semibold transition-all ${
-                    guests === opt.count
-                      ? "border-[#d5b582] bg-[#d5b582] text-[#122020] font-bold shadow-md"
-                      : "border-white/8 bg-white/[.03] text-[#c7d9d3] hover:bg-white/[.07]"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {guestOptions.map(opt => {
+                const isSelected = guests === opt.count;
+                return (
+                  <button
+                    key={opt.count}
+                    type="button"
+                    onClick={() => setGuests(opt.count)}
+                    className={`rounded-2xl border p-3 text-left transition-all relative overflow-hidden ${
+                      isSelected
+                        ? "border-[#d5b582] bg-gradient-to-br from-[#d5b582]/25 to-[#d5b582]/10 text-[#fcf5e8] shadow-md ring-1 ring-[#d5b582]"
+                        : "border-white/10 bg-white/[.025] text-[#c7d9d3] hover:border-white/20 hover:bg-white/[.06]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-bold ${isSelected ? "text-[#d5b582]" : "text-[#ebe7dc]"}`}>
+                        {opt.label}
+                      </span>
+                      {isSelected && <Check size={14} className="text-[#d5b582]" />}
+                    </div>
+                    <div className="text-[11px] text-[#8ca6a1] mt-0.5">{opt.sub}</div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Dining Time Slot (Today) */}
+          {/* 2. Dining Time Slot (Today - Symmetrical 2x4 Grid) */}
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block">
-              2. Dining Time (Today · 26 Sep)
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">
+                2. Dining Time (Today · All-Day Slots)
+              </label>
+              <span className="text-[11px] text-[#8ca6a1]">Instant Confirmation</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {timeSlots.map(slot => {
+                const fullSlotLabel = `${slot.time} (${slot.label})`;
+                const isSelected = timeSlot === fullSlotLabel || timeSlot.startsWith(slot.time);
+                return (
+                  <button
+                    key={slot.time}
+                    type="button"
+                    onClick={() => setTimeSlot(fullSlotLabel)}
+                    className={`rounded-2xl border p-3 text-left transition-all flex items-center justify-between ${
+                      isSelected
+                        ? "border-[#d5b582] bg-gradient-to-r from-[#d5b582]/25 to-[#d5b582]/10 text-[#fcf5e8] shadow-md ring-1 ring-[#d5b582]"
+                        : "border-white/10 bg-white/[.025] text-[#c7d9d3] hover:border-white/20 hover:bg-white/[.06]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`font-mono text-sm font-bold px-2 py-0.5 rounded-lg ${
+                        isSelected ? "bg-[#d5b582] text-[#122020]" : "bg-white/10 text-[#ebe7dc]"
+                      }`}>
+                        {slot.time}
+                      </span>
+                      <div>
+                        <div className={`text-xs font-semibold ${isSelected ? "text-[#fcf5e8]" : "text-[#c7d9d3]"}`}>
+                          {slot.label}
+                        </div>
+                        <div className="text-[10px] text-[#8ca6a1]">{slot.period}</div>
+                      </div>
+                    </div>
+                    {isSelected && <Check size={16} className="text-[#d5b582] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 3. Seating Area Preference (Symmetrical 2x3 Grid) */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">
+                3. Preferred Seating Atmosphere
+              </label>
+              <span className="text-[11px] text-[#8ca6a1]">Subject to table readiness</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {seatingOptions.map(seat => {
+                const isSelected = seatingArea === seat.name;
+                return (
+                  <button
+                    key={seat.name}
+                    type="button"
+                    onClick={() => setSeatingArea(seat.name)}
+                    className={`rounded-2xl border p-3 text-left transition-all flex items-start gap-3 ${
+                      isSelected
+                        ? "border-[#d5b582] bg-gradient-to-r from-[#d5b582]/20 to-[#d5b582]/5 text-[#fcf5e8] shadow-md ring-1 ring-[#d5b582]"
+                        : "border-white/10 bg-white/[.025] text-[#c7d9d3] hover:border-white/20 hover:bg-white/[.06]"
+                    }`}
+                  >
+                    <span className="text-xl shrink-0 mt-0.5">{seat.icon}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className={`text-xs font-semibold ${isSelected ? "text-[#d5b582] font-bold" : "text-[#fcf5e8]"}`}>
+                          {seat.name}
+                        </span>
+                        {isSelected && <Check size={14} className="text-[#d5b582]" />}
+                      </div>
+                      <p className="text-[11px] text-[#8ca6a1] mt-0.5 leading-snug">{seat.desc}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 4. Special Occasion / Dietary Requirement (Symmetrical 2x3 / 3x2 Grid) */}
+          <div>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block mb-2.5">
+              4. Special Occasion / Dietary Preference
             </label>
-            <div className="mt-2.5 grid grid-cols-2 gap-2">
-              {timeSlots.map(slot => (
-                <button
-                  key={slot}
-                  type="button"
-                  onClick={() => setTimeSlot(slot)}
-                  className={`rounded-xl border py-2 px-3 text-left text-xs font-semibold transition-all flex items-center justify-between ${
-                    timeSlot === slot
-                      ? "border-[#d5b582] bg-[#d5b582]/20 text-[#fcf5e8] font-bold shadow-sm"
-                      : "border-white/8 bg-white/[.03] text-[#c7d9d3] hover:bg-white/[.07]"
-                  }`}
-                >
-                  <span>{slot}</span>
-                  {timeSlot === slot && <Check size={14} className="text-[#d5b582]" />}
-                </button>
-              ))}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {occasions.map(occ => {
+                const isSelected = occasion === occ.label;
+                return (
+                  <button
+                    key={occ.label}
+                    type="button"
+                    onClick={() => setOccasion(occ.label)}
+                    className={`rounded-xl border py-2.5 px-3 text-left text-xs font-medium transition-all flex items-center gap-2 ${
+                      isSelected
+                        ? "border-[#d5b582] bg-[#d5b582] text-[#122020] font-bold shadow-sm"
+                        : "border-white/10 bg-white/[.025] text-[#a7c2bc] hover:bg-white/[.06] hover:text-[#ebe7dc]"
+                    }`}
+                  >
+                    <span className="text-sm">{occ.icon}</span>
+                    <span className="truncate">{occ.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Seating Area Preference */}
+          {/* 5. Special Request Notes */}
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block">
-              3. Preferred Seating Atmosphere
-            </label>
-            <div className="mt-2.5 space-y-2">
-              {seatingOptions.map(seat => (
-                <button
-                  key={seat}
-                  type="button"
-                  onClick={() => setSeatingArea(seat)}
-                  className={`w-full rounded-xl border py-2 px-3.5 text-left text-xs font-semibold transition-all flex items-center justify-between ${
-                    seatingArea === seat
-                      ? "border-[#d5b582] bg-[#d5b582]/15 text-[#fcf5e8] font-bold"
-                      : "border-white/8 bg-white/[.03] text-[#c7d9d3] hover:bg-white/[.07]"
-                  }`}
-                >
-                  <span>{seat}</span>
-                  {seatingArea === seat && <span className="text-xs text-[#d5b582]">Selected</span>}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Occasion & Dietary */}
-          <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block">
-              4. Special Occasion / Dietary Requirement
-            </label>
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {occasions.map(occ => (
-                <button
-                  key={occ}
-                  type="button"
-                  onClick={() => setOccasion(occ)}
-                  className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
-                    occasion === occ
-                      ? "bg-[#d5b582] text-[#122020] font-bold"
-                      : "border border-white/10 bg-white/[.04] text-[#a7c2bc] hover:bg-white/[.08]"
-                  }`}
-                >
-                  {occ}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Special Request Notes */}
-          <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block">
-              5. Custom Notes (Optional)
+            <label className="text-xs font-bold uppercase tracking-wider text-[#d5b582] block mb-2">
+              5. Custom Guest Notes / Special Requests (Optional)
             </label>
             <input
               type="text"
               value={specialRequests}
               onChange={e => setSpecialRequests(e.target.value)}
-              placeholder="e.g. Quiet corner table, anniversary flower petals..."
-              className="mt-2 w-full rounded-xl border border-white/10 bg-white/[.03] px-3.5 py-2.5 text-xs text-[#fcf5e8] placeholder:text-[#6a807b] focus:border-[#d5b582] focus:outline-none"
+              placeholder="e.g. Quiet corner table, anniversary candlelight setup, extra Jain prep..."
+              className="w-full rounded-xl border border-white/10 bg-black/25 px-4 py-3 text-xs text-[#fcf5e8] placeholder:text-[#6a807b] focus:border-[#d5b582] focus:outline-none focus:ring-1 focus:ring-[#d5b582]"
             />
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t border-[#d5b582]/20 bg-[#162928] p-4 flex items-center justify-between gap-3">
-          <button className="sr-button-quiet text-xs" onClick={onClose}>
+        <div className="border-t border-[#d5b582]/20 bg-[#162928] px-6 sm:px-8 py-4 flex items-center justify-between gap-4">
+          <button className="sr-button-quiet text-xs font-semibold px-4 py-2.5" onClick={onClose}>
             Cancel
           </button>
           <button
-            className="sr-button flex-1 flex items-center justify-center gap-2"
+            className="sr-button flex-1 flex items-center justify-center gap-2 py-2.5 text-xs sm:text-sm font-bold"
             onClick={handleConfirm}
           >
             <CheckCircle2 size={16} />
             <span>
-              {existingReservation ? "Update Reservation" : `Confirm Table for ${guests} ${guests === 1 ? "Guest" : "Guests"}`}
+              {existingReservation ? "Update Table Reservation" : `Confirm Table for ${guests} ${guests === 1 ? "Guest" : "Guests"}`}
             </span>
           </button>
         </div>
