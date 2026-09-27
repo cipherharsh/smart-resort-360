@@ -191,18 +191,18 @@ function Entry({onEnter}:{onEnter:()=>void}) {
 
     {/* Right Art / Card Area */}
     <div className="sr-entry-art relative z-10">
-      <div className="sr-entry-card z-30 relative backdrop-blur-md">
+      <div className="sr-entry-card z-30 relative">
         <div className="flex items-center justify-between">
           <StatusChip>Live environment</StatusChip>
-          <span className="sr-dim font-mono text-[10px]">v0.9.4</span>
+          <span className="sr-dim font-mono text-[10px] text-white/70 drop-shadow">v0.9.4</span>
         </div>
-        <p key={activeHero.title} className="mt-5 font-serif text-xl leading-tight text-[#f3ede2] animate-in fade-in duration-500">
+        <p key={activeHero.title} className="mt-5 font-serif text-xl leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] animate-in fade-in duration-500">
           {activeHero.title}
         </p>
-        <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-4">
-          <div><div className="sr-label">Occupancy</div><div className="mt-1 text-sm font-semibold">87.4%</div></div>
-          <div><div className="sr-label">Guest pulse</div><div className="mt-1 text-sm font-semibold">4.8 <span className="text-[#e9bc73]">★</span></div></div>
-          <div><div className="sr-label">Open tasks</div><div className="mt-1 text-sm font-semibold">12</div></div>
+        <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/15 pt-4">
+          <div><div className="sr-label text-white/80 drop-shadow">Occupancy</div><div className="mt-1 text-sm font-semibold text-white drop-shadow">87.4%</div></div>
+          <div><div className="sr-label text-white/80 drop-shadow">Guest pulse</div><div className="mt-1 text-sm font-semibold text-white drop-shadow">4.8 <span className="text-[#e9bc73]">★</span></div></div>
+          <div><div className="sr-label text-white/80 drop-shadow">Open tasks</div><div className="mt-1 text-sm font-semibold text-white drop-shadow">12</div></div>
         </div>
       </div>
     </div>
