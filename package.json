@@ -1,0 +1,9 @@
+﻿{
+  "name": "smart-resort-360",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build && cd .. && node copy-dist.js",
+    "dev": "cd frontend && npm run dev"
+  }
+}
