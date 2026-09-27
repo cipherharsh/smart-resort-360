@@ -122,21 +122,22 @@ function SectionHeader({eyebrow,title,description,action}:{eyebrow:string;title:
 function Stat({label,value,delta,tone="teal",icon: I}:{label:string;value:string;delta:string;tone?:"teal"|"amber"|"red"|"blue";icon:any}) { const colors={teal:"#8fd6c2",amber:"#e9bc73",red:"#ef9a8e",blue:"#a9c9e9"}; return <div className="sr-surface sr-enter p-5"><div className="flex items-center justify-between"><div className="sr-label">{label}</div><div className="rounded-lg p-2" style={{background:`${colors[tone]}12`,color:colors[tone]}}><Icon icon={I} size={16}/></div></div><div className="sr-number mt-4 text-[28px] font-semibold text-[#f4f0e8]">{value}</div><div className="mt-2 flex items-center gap-2 text-[11px]" style={{color:colors[tone]}}><TrendingUp size={12}/>{delta}</div></div>; }
 
 function Entry({onEnter}:{onEnter:()=>void}) {
-  const [imgIndex, setImgIndex] = useState<number>(() => {
-    // Generate a random initial index on page load
+  const [activeIdx, setActiveIdx] = useState<number>(() => {
     return Math.floor(Math.random() * RESORT_HERO_IMAGES.length);
   });
-  const [prevIndex, setPrevIndex] = useState<number>(imgIndex);
 
-  const activeHero = RESORT_HERO_IMAGES[imgIndex];
+  // Preload all resort images immediately to avoid any image loading lag
+  useEffect(() => {
+    RESORT_HERO_IMAGES.forEach((hero) => {
+      const img = new Image();
+      img.src = hero.url;
+    });
+  }, []);
 
-  // Automatically cycle to the next hero image every 2.5 seconds with silky smooth synced crossfade
+  // Synchronously cycle active index every 2.5s in atomic lockstep
   useEffect(() => {
     const timer = setInterval(() => {
-      setImgIndex((current) => {
-        setPrevIndex(current);
-        return (current + 1) % RESORT_HERO_IMAGES.length;
-      });
+      setActiveIdx((prev) => (prev + 1) % RESORT_HERO_IMAGES.length);
     }, 2500);
     return () => clearInterval(timer);
   }, []);
@@ -145,9 +146,7 @@ function Entry({onEnter}:{onEnter:()=>void}) {
     {/* Full-bleed background slideshow image across the entire Entry screen */}
     <div className="absolute inset-0 z-0 overflow-hidden bg-[#0a1515]">
       {RESORT_HERO_IMAGES.map((hero, idx) => {
-        const isCurrent = idx === imgIndex;
-        const isPrevious = idx === prevIndex && prevIndex !== imgIndex;
-        const isVisible = isCurrent || isPrevious;
+        const isActive = idx === activeIdx;
 
         return (
           <img
@@ -164,11 +163,10 @@ function Entry({onEnter}:{onEnter:()=>void}) {
             className="absolute inset-0 h-full w-full object-cover"
             style={{
               filter: "saturate(1.02) contrast(1.02) brightness(0.96)",
-              opacity: isCurrent ? 1 : 0,
-              zIndex: isCurrent ? 2 : isPrevious ? 1 : 0,
-              transition: "opacity 900ms cubic-bezier(0.4, 0, 0.2, 1)",
-              transform: "translateZ(0)",
-              willChange: isVisible ? "opacity" : "auto",
+              opacity: isActive ? 1 : 0,
+              zIndex: isActive ? 10 : 0,
+              transition: "opacity 800ms ease-in-out",
+              willChange: "opacity",
               pointerEvents: "none"
             }}
             alt={hero.title}
@@ -176,11 +174,11 @@ function Entry({onEnter}:{onEnter:()=>void}) {
         );
       })}
       {/* Subtle global ambient depth overlay */}
-      <div className="absolute inset-0 z-[3] bg-gradient-to-t from-black/35 via-transparent to-black/15 pointer-events-none" />
+      <div className="absolute inset-0 z-[12] bg-gradient-to-t from-black/35 via-transparent to-black/15 pointer-events-none" />
     </div>
 
     {/* Left Translucent Panel */}
-    <div className="sr-entry-copy relative z-10">
+    <div className="sr-entry-copy relative z-20">
       <Logo large={true}/>
       <div className="relative z-[1] max-w-xl">
         <div className="sr-kicker mb-5 text-[14px] font-extrabold tracking-wider text-[#a6ede0] drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)]">
@@ -203,7 +201,7 @@ function Entry({onEnter}:{onEnter:()=>void}) {
     </div>
 
     {/* Right Art / Card Area */}
-    <div className="sr-entry-art relative z-10">
+    <div className="sr-entry-art relative z-20">
       <div className="sr-entry-card z-30 relative">
         <div className="flex items-center justify-between">
           <StatusChip tone="teal"><span className="text-xs font-bold text-white tracking-wide">Live environment</span></StatusChip>
@@ -211,25 +209,18 @@ function Entry({onEnter}:{onEnter:()=>void}) {
         </div>
         <div className="relative mt-4 min-h-[64px] overflow-hidden">
           {RESORT_HERO_IMAGES.map((hero, idx) => {
-            const isCurrent = idx === imgIndex;
-            const isPrevious = idx === prevIndex && prevIndex !== imgIndex;
-            const isVisible = isCurrent || isPrevious;
-            if (!isVisible) return null;
+            const isActive = idx === activeIdx;
 
             return (
               <p
                 key={hero.title}
                 className="absolute inset-x-0 top-0 font-serif text-[23px] leading-tight text-white font-semibold drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)]"
                 style={{
-                  opacity: isCurrent ? 1 : 0,
-                  transform: isCurrent ? "translateY(0px)" : "translateY(-6px)",
-                  filter: isCurrent ? "blur(0px)" : "blur(4px)",
-                  zIndex: isCurrent ? 2 : 1,
-                  transition: isCurrent
-                    ? "opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1), filter 700ms cubic-bezier(0.22, 1, 0.36, 1)"
-                    : "opacity 500ms cubic-bezier(0.22, 1, 0.36, 1), transform 500ms cubic-bezier(0.22, 1, 0.36, 1), filter 500ms cubic-bezier(0.22, 1, 0.36, 1)",
-                  willChange: "opacity, transform, filter",
-                  pointerEvents: isCurrent ? "auto" : "none",
+                  opacity: isActive ? 1 : 0,
+                  zIndex: isActive ? 10 : 0,
+                  transition: "opacity 800ms ease-in-out",
+                  willChange: "opacity",
+                  pointerEvents: isActive ? "auto" : "none",
                 }}
               >
                 {hero.title}
