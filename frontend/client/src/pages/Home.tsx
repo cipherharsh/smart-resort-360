@@ -98,11 +98,22 @@ const guestNav = [
   {id:"profile", label:"Profile", icon:UserRound}
 ] as const;
 
-function Logo({compact=false}:{compact?:boolean}) {
-  return <div className="flex items-center gap-3">
-    <div className="grid h-9 w-9 place-items-center rounded-lg bg-[#8fd6c2] text-[#132725] shadow-[0_7px_20px_rgba(107,203,173,.16)]"><span className="font-serif text-lg font-bold">S</span></div>
-    {!compact && <div className="sr-wordmark-copy"><div className="text-[13px] font-bold tracking-[.02em] text-[#e7eee7]">SMART RESORT <span className="text-[#8fd6c2]">360</span></div><div className="sr-dim mt-0.5 text-[9px] uppercase tracking-[.16em]">Intelligent hospitality</div></div>}
-  </div>
+function Logo({compact=false, large=false}:{compact?:boolean; large?:boolean}) {
+  return <div className="flex items-center gap-3.5">
+    <div className={`grid ${large ? 'h-11 w-11' : 'h-9 w-9'} place-items-center rounded-xl bg-[#8fd6c2] text-[#132725] shadow-[0_7px_20px_rgba(107,203,173,.25)]`}>
+      <span className={`font-serif ${large ? 'text-2xl' : 'text-lg'} font-bold`}>S</span>
+    </div>
+    {!compact && (
+      <div className="sr-wordmark-copy">
+        <div className={`${large ? 'text-[17px]' : 'text-[13px]'} font-extrabold tracking-[.03em] text-[#ffffff] drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]`}>
+          SMART RESORT <span className="text-[#8fd6c2]">360</span>
+        </div>
+        <div className={`mt-0.5 ${large ? 'text-[11px] text-[#e0f2ee]' : 'sr-dim text-[9px]'} uppercase tracking-[.18em] font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]`}>
+          Intelligent hospitality
+        </div>
+      </div>
+    )}
+  </div>;
 }
 function Icon({icon: I, size=16}:{icon:any; size?:number}) { return <I size={size} strokeWidth={1.7}/>; }
 function StatusChip({children,tone="teal",pulse=false}:{children:React.ReactNode;tone?:"teal"|"amber"|"red"|"blue"|"neutral";pulse?:boolean}) { return <span className={`sr-chip sr-chip-${tone} ${pulse?"sr-live":""}`}><span className="h-1.5 w-1.5 rounded-full bg-current" />{children}</span>; }
@@ -170,22 +181,24 @@ function Entry({onEnter}:{onEnter:()=>void}) {
 
     {/* Left Translucent Panel */}
     <div className="sr-entry-copy relative z-10">
-      <Logo/>
+      <Logo large={true}/>
       <div className="relative z-[1] max-w-xl">
-        <div className="sr-kicker mb-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">PS ID 4 · HACKCELESTIAL 3.0</div>
+        <div className="sr-kicker mb-5 text-[14px] font-extrabold tracking-wider text-[#a6ede0] drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)]">
+          PS ID 4 · HACKCELESTIAL 3.0
+        </div>
         <h1 className="font-serif text-[clamp(44px,6vw,82px)] font-medium leading-[.96] tracking-[-.055em] text-[#ffffff] drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)]">
           From resort data<br/>
           <span className="text-[#8fd6c2] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">to intelligent action.</span>
         </h1>
-        <p className="mt-7 max-w-md text-[15px] leading-7 text-[#f0f5f4] font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+        <p className="mt-7 max-w-lg text-[18px] leading-8 text-[#ffffff] font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
           An intelligent operating layer connecting resort operations, guest experience and revenue intelligence.
         </p>
-        <button className="sr-button mt-9 min-h-12 px-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)]" onClick={onEnter}>
-          Enter platform <ArrowRight size={16}/>
+        <button className="sr-button mt-9 min-h-14 px-8 text-[15px] font-bold shadow-[0_12px_32px_rgba(0,0,0,0.6)]" onClick={onEnter}>
+          Enter platform <ArrowRight size={18}/>
         </button>
       </div>
-      <div className="relative z-[1] flex items-center gap-3 text-[10px] uppercase tracking-[.14em] text-[#d6e5e2] font-semibold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-        <span className="h-2 w-2 rounded-full bg-[#8fd6c2] shadow-[0_0_8px_#8fd6c2]"/> Sense <span>→</span> Predict <span>→</span> Recommend <span>→</span> Act
+      <div className="relative z-[1] flex items-center gap-3.5 text-[13px] uppercase tracking-[.18em] text-[#ffffff] font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+        <span className="h-2.5 w-2.5 rounded-full bg-[#8fd6c2] shadow-[0_0_10px_#8fd6c2]"/> Sense <span className="text-[#8fd6c2]">→</span> Predict <span className="text-[#8fd6c2]">→</span> Recommend <span className="text-[#8fd6c2]">→</span> Act
       </div>
     </div>
 
@@ -193,16 +206,25 @@ function Entry({onEnter}:{onEnter:()=>void}) {
     <div className="sr-entry-art relative z-10">
       <div className="sr-entry-card z-30 relative">
         <div className="flex items-center justify-between">
-          <StatusChip>Live environment</StatusChip>
-          <span className="sr-dim font-mono text-[10px] text-white/70 drop-shadow">v0.9.4</span>
+          <StatusChip tone="teal"><span className="text-xs font-bold text-white tracking-wide">Live environment</span></StatusChip>
+          <span className="font-mono text-xs font-bold text-white/90 drop-shadow">v0.9.4</span>
         </div>
-        <p key={activeHero.title} className="mt-5 font-serif text-xl leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] animate-in fade-in duration-500">
+        <p key={activeHero.title} className="mt-5 font-serif text-[23px] leading-tight text-white font-semibold drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] animate-in fade-in duration-500">
           {activeHero.title}
         </p>
-        <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/15 pt-4">
-          <div><div className="sr-label text-white/80 drop-shadow">Occupancy</div><div className="mt-1 text-sm font-semibold text-white drop-shadow">87.4%</div></div>
-          <div><div className="sr-label text-white/80 drop-shadow">Guest pulse</div><div className="mt-1 text-sm font-semibold text-white drop-shadow">4.8 <span className="text-[#e9bc73]">★</span></div></div>
-          <div><div className="sr-label text-white/80 drop-shadow">Open tasks</div><div className="mt-1 text-sm font-semibold text-white drop-shadow">12</div></div>
+        <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/20 pt-4">
+          <div>
+            <div className="text-[12px] font-bold uppercase tracking-wider text-[#a0dfd0] drop-shadow">Occupancy</div>
+            <div className="mt-1 text-lg font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">87.4%</div>
+          </div>
+          <div>
+            <div className="text-[12px] font-bold uppercase tracking-wider text-[#a0dfd0] drop-shadow">Guest pulse</div>
+            <div className="mt-1 text-lg font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">4.8 <span className="text-[#e9bc73]">★</span></div>
+          </div>
+          <div>
+            <div className="text-[12px] font-bold uppercase tracking-wider text-[#a0dfd0] drop-shadow">Open tasks</div>
+            <div className="mt-1 text-lg font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">12</div>
+          </div>
         </div>
       </div>
     </div>
