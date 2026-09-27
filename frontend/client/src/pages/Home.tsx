@@ -445,8 +445,8 @@ function GuestHome({setPage}:{setPage:(p:Page)=>void}) {
           <div className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <div className="sr-label">Sunridge Cove</div>
-                <div className="mt-1 text-sm font-semibold">Room 101 · Until 29 Sep</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">Sunridge Cove</div>
+                <div className="mt-1 text-base font-semibold text-[#fcf5e8]">Room 101 · Until 29 Sep</div>
               </div>
               <StatusChip tone="amber">Day 2 of 5</StatusChip>
             </div>
@@ -461,14 +461,17 @@ function GuestHome({setPage}:{setPage:(p:Page)=>void}) {
               <GuestAction icon={ArrowRight} label="Request buggy" onClick={()=>setPage("buggy")}/>
             </div>
             
-            <div className="mt-6 rounded-xl border border-[#d5b582]/18 bg-[#d5b582]/[.06] p-4">
-              <div className="flex items-start gap-3">
-                <Sparkles className="mt-0.5 text-[#d5b582]" size={16}/>
+            <div className="mt-6 rounded-2xl border border-[#d5b582]/25 bg-gradient-to-br from-[#d5b582]/[.08] to-white/[.02] p-4.5 shadow-md">
+              <div className="flex items-start gap-3.5">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner">
+                  <Sparkles size={18} />
+                </div>
                 <div>
-                  <div className="text-xs font-semibold">Curated for your afternoon</div>
-                  <div className="sr-muted mt-1 text-[11px] leading-5">Explore indoor snooker, pool, and outdoor cricket courts.</div>
-                  <button className="mt-3 text-[11px] font-semibold text-[#d5b582]" onClick={()=>setPage("amenities")}>
-                    View recommendation <ArrowRight className="ml-1 inline" size={12}/>
+                  <div className="text-sm font-bold text-[#fcf5e8]">Curated for your afternoon</div>
+                  <div className="mt-1 text-xs sm:text-sm leading-relaxed text-[#d4ded7]">Explore indoor snooker, pool, and outdoor cricket courts.</div>
+                  <button className="mt-2.5 flex items-center gap-1.5 text-xs font-bold text-[#d5b582] transition-colors hover:text-[#eed2a4]" onClick={()=>setPage("amenities")}>
+                    <span>View recommendation</span>
+                    <ArrowRight size={13} />
                   </button>
                 </div>
               </div>
@@ -481,8 +484,41 @@ function GuestHome({setPage}:{setPage:(p:Page)=>void}) {
   );
 }
 
-function GuestAction({icon,label,onClick}:{icon:any;label:string;onClick:()=>void}) { return <button onClick={onClick} className="sr-surface-soft flex items-center gap-3 p-3 text-left hover:bg-white/[.07]"><div className="rounded-lg bg-[#d5b582]/10 p-2 text-[#d5b582]"><Icon icon={icon} size={15}/></div><span className="text-[11px] font-semibold">{label}</span></button>; }
-function GuestBottom({active,setPage}:{active:string;setPage:(p:Page)=>void}) { return <div className="sr-bottom-nav"><button className={active==="home"?"active":""} onClick={()=>setPage("guest-home")}><HomeIcon size={16}/><span>Home</span></button><button className={active==="concierge"?"active":""} onClick={()=>setPage("concierge")}><Bot size={16}/><span>Concierge</span></button><button className={active==="amenities"?"active":""} onClick={()=>setPage("amenities")}><Sparkles size={16}/><span>Amenities</span></button><button className={active==="profile"?"active":""} onClick={()=>setPage("profile")}><UserRound size={16}/><span>Profile</span></button></div>; }
+function GuestAction({icon,label,onClick}:{icon:any;label:string;onClick:()=>void}) {
+  return (
+    <button
+      onClick={onClick}
+      className="sr-surface-soft flex items-center gap-3.5 p-3.5 rounded-xl border border-white/8 text-left transition-all hover:bg-white/[.08] hover:border-[#d5b582]/30 shadow-sm"
+    >
+      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/25 shadow-inner">
+        <Icon icon={icon} size={18}/>
+      </div>
+      <span className="text-xs sm:text-sm font-semibold text-[#fcf5e8]">{label}</span>
+    </button>
+  );
+}
+function GuestBottom({active,setPage}:{active:string;setPage:(p:Page)=>void}) {
+  return (
+    <div className="sr-bottom-nav">
+      <button className={active==="home"?"active":""} onClick={()=>setPage("guest-home")}>
+        <HomeIcon size={18}/>
+        <span className="text-xs font-medium">Home</span>
+      </button>
+      <button className={active==="concierge"?"active":""} onClick={()=>setPage("concierge")}>
+        <Bot size={18}/>
+        <span className="text-xs font-medium">Concierge</span>
+      </button>
+      <button className={active==="amenities"?"active":""} onClick={()=>setPage("amenities")}>
+        <Sparkles size={18}/>
+        <span className="text-xs font-medium">Amenities</span>
+      </button>
+      <button className={active==="profile"?"active":""} onClick={()=>setPage("profile")}>
+        <UserRound size={18}/>
+        <span className="text-xs font-medium">Profile</span>
+      </button>
+    </div>
+  );
+}
 
 function Concierge({demo,setDemo,setPage}:{demo:DemoState;setDemo:React.Dispatch<React.SetStateAction<DemoState>>;setPage:(p:Page)=>void}) {
   const [asked,setAsked]=useState(demo.guestAsked);
@@ -492,50 +528,50 @@ function Concierge({demo,setDemo,setPage}:{demo:DemoState;setDemo:React.Dispatch
         <div className="sr-phone-card">
           <div className="flex items-center gap-3 border-b border-white/8 p-5">
             <button className="sr-button-quiet" onClick={()=>setPage("guest-home")}><ArrowLeft size={17}/></button>
-            <div className="grid h-9 w-9 place-items-center rounded-full bg-[#d5b582]/12 text-[#d5b582]"><Bot size={18}/></div>
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner"><Bot size={20}/></div>
             <div>
-              <div className="text-sm font-semibold">AI Concierge</div>
-              <div className="sr-muted text-[10px]">Here to make it effortless</div>
+              <div className="text-base font-semibold text-[#fcf5e8]">AI Concierge</div>
+              <div className="text-xs text-[#a8bfb8]">Here to make your stay effortless</div>
             </div>
             <StatusChip tone="teal" pulse>Online</StatusChip>
           </div>
           <div className="min-h-[470px] p-5">
             <div className="sr-kicker text-[#d5b582]">Personalized for Maya</div>
-            <h1 className="mt-2 font-serif text-3xl">How can I help?</h1>
+            <h1 className="mt-1.5 font-serif text-3xl font-semibold text-[#fcf5e8]">How can I help?</h1>
             {!asked ? (
               <>
-                <div className="mt-9 flex justify-end">
-                  <div className="max-w-[80%] rounded-2xl rounded-br-sm bg-[#7d6847] px-4 py-3 text-[12px] leading-5 text-[#fcf5e8]">
+                <div className="mt-8 flex justify-end">
+                  <div className="max-w-[80%] rounded-2xl rounded-br-sm bg-[#7d6847] px-4 py-3 text-sm leading-relaxed text-[#fcf5e8] shadow-sm">
                     I want to use the spa.
                   </div>
                 </div>
-                <div className="mt-5 flex gap-3">
-                  <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#d5b582]/12 text-[#d5b582]"><Bot size={14}/></div>
-                  <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white/[.06] px-4 py-3 text-[12px] leading-5 text-[#ebe7dc]">
+                <div className="mt-5 flex gap-3.5">
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/25"><Bot size={16}/></div>
+                  <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white/[.07] px-4 py-3 text-sm leading-relaxed text-[#ebe7dc] border border-white/8 shadow-sm">
                     Luxury Spa is currently full, but I can join you to the waitlist. I also found a few options that match your wellness preferences.
                   </div>
                 </div>
-                <button className="sr-button mt-6 w-full" onClick={()=>{setAsked(true);setDemo(d=>({...d,guestAsked:true,lastAction:"Concierge recommended alternatives"}))}}>
-                  Show my options <ArrowRight size={14}/>
+                <button className="sr-button mt-6 w-full text-sm font-semibold" onClick={()=>{setAsked(true);setDemo(d=>({...d,guestAsked:true,lastAction:"Concierge recommended alternatives"}))}}>
+                  Show my options <ArrowRight size={15}/>
                 </button>
               </>
             ) : (
               <>
-                <div className="mt-7 rounded-xl border border-[#e9bc73]/20 bg-[#e9bc73]/[.06] p-4">
-                  <div className="flex items-start gap-3">
-                    <Timer className="mt-0.5 text-[#e9bc73]" size={17}/>
+                <div className="mt-6 rounded-2xl border border-[#e9bc73]/25 bg-[#e9bc73]/[.07] p-4.5 shadow-sm">
+                  <div className="flex items-start gap-3.5">
+                    <Timer className="mt-0.5 text-[#e9bc73]" size={19}/>
                     <div>
-                      <div className="text-xs font-semibold">Luxury Spa · Currently full</div>
-                      <div className="sr-muted mt-1 text-[10px] leading-5">Join the smart waitlist. We’ll offer a slot in priority order.</div>
-                      <button className="sr-button sr-button-secondary mt-3" onClick={()=>{toast("You're on the waitlist · position 3");setPage("waitlist")}}>
+                      <div className="text-sm font-bold text-[#fcf5e8]">Luxury Spa · Currently full</div>
+                      <div className="mt-1 text-xs sm:text-sm leading-relaxed text-[#d4ded7]">Join the smart waitlist. We’ll offer a slot in priority order.</div>
+                      <button className="sr-button sr-button-secondary mt-3 text-xs font-semibold" onClick={()=>{toast("You're on the waitlist · position 3");setPage("waitlist")}}>
                         Join waitlist
                       </button>
                     </div>
                   </div>
                 </div>
                 <div className="mt-7">
-                  <div className="sr-label text-[#d5b582]">Recommended for you</div>
-                  <h2 className="mt-2 font-serif text-xl">While you wait</h2>
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">Recommended for you</div>
+                  <h2 className="mt-1.5 font-serif text-2xl font-semibold text-[#fcf5e8]">While you wait</h2>
                   <div className="mt-4 space-y-3">
                     <Alternative name="Cedar Sauna" meta="Heat therapy · 45 min" reason="Similar wellness profile" onClick={()=>{setDemo(d=>({...d,lastAction:"Cedar Sauna reserved"}));setPage("waitlist")}}/>
                     <Alternative name="Yoga Studio" meta="Outdoor · 60 min · Available" reason="Available at 17:30" onClick={()=>toast("Yoga Studio details opened")}/>
@@ -545,10 +581,10 @@ function Concierge({demo,setDemo,setPage}:{demo:DemoState;setDemo:React.Dispatch
               </>
             )}
             <div className="mt-8 flex flex-wrap gap-2">
-              <button className="sr-chip" onClick={()=>toast("☀️ Today's Weather in Goa: 28.4°C Sunny & Coastal Breeze · Perfect for Golf & Cricket!")}>☀️ Today's weather?</button>
-              <button className="sr-chip" onClick={()=>toast("What's nearby? ready")}>What's nearby?</button>
-              <button className="sr-chip" onClick={()=>toast("Dinner recommendations ready")}>Dinner tonight</button>
-              <button className="sr-chip" onClick={()=>toast("Buggy request started")}>Call a buggy</button>
+              <button className="sr-chip text-xs" onClick={()=>toast("☀️ Today's Weather in Goa: 28.4°C Sunny & Coastal Breeze · Perfect for Golf & Cricket!")}>☀️ Today's weather?</button>
+              <button className="sr-chip text-xs" onClick={()=>toast("What's nearby? ready")}>What's nearby?</button>
+              <button className="sr-chip text-xs" onClick={()=>toast("Dinner recommendations ready")}>Dinner tonight</button>
+              <button className="sr-chip text-xs" onClick={()=>toast("Buggy request started")}>Call a buggy</button>
             </div>
           </div>
           <GuestBottom active="concierge" setPage={setPage}/>
@@ -558,7 +594,24 @@ function Concierge({demo,setDemo,setPage}:{demo:DemoState;setDemo:React.Dispatch
   );
 }
 
-function Alternative({name,meta,reason,onClick}:{name:string;meta:string;reason:string;onClick:()=>void}) { return <button onClick={onClick} className="flex w-full items-center gap-3 rounded-xl border border-white/8 bg-white/[.025] p-3 text-left hover:bg-white/[.06]"><div className="grid h-11 w-11 place-items-center rounded-lg bg-[#d5b582]/10 text-[#d5b582]"><Sparkles size={17}/></div><div className="min-w-0 flex-1"><div className="text-xs font-semibold">{name}</div><div className="sr-muted mt-1 text-[10px]">{meta}</div><div className="mt-2 text-[10px] text-[#d5b582]">Why this? · {reason}</div></div><ArrowRight size={14} className="text-[#8c8371]"/></button>; }
+function Alternative({name,meta,reason,onClick}:{name:string;meta:string;reason:string;onClick:()=>void}) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex w-full items-center gap-3.5 rounded-xl border border-white/8 bg-white/[.025] p-3.5 text-left transition-all hover:bg-white/[.06] hover:border-[#d5b582]/30 shadow-sm"
+    >
+      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#d5b582]/12 text-[#d5b582] border border-[#d5b582]/25 shadow-inner">
+        <Sparkles size={18}/>
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="text-sm font-semibold text-[#fcf5e8]">{name}</div>
+        <div className="mt-0.5 text-xs text-[#a8bfb8]">{meta}</div>
+        <div className="mt-1.5 text-xs font-medium text-[#d5b582]">Why this? · {reason}</div>
+      </div>
+      <ArrowRight size={15} className="text-[#8c8371]"/>
+    </button>
+  );
+}
 
 function CoveMenuModal({ onClose, onReserve }: { onClose: () => void; onReserve: () => void }) {
   const [activePage, setActivePage] = useState<1 | 2>(1);
@@ -2337,83 +2390,83 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
               {/* SECTION: FOOD & DRINKS (RESTAURANT & BAR) */}
               {(selectedCategory === "All" || selectedCategory === "Food & Drinks") && (
                 <div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                     <div className="flex items-center gap-2">
                       <span className="text-base font-bold text-[#d5b582]">🍽️ Food & Drinks</span>
-                      <span className="text-[11px] text-[#8ca6a1]">(Restaurant, Lounge Bar, Brasserie)</span>
+                      <span className="text-xs text-[#a8bfb8]">(Restaurant, Lounge Bar, Brasserie)</span>
                     </div>
                     <StatusChip tone="teal">{foodAndDrinks.length} Venues</StatusChip>
                   </div>
 
-                  <div className="mt-3 space-y-3">
+                  <div className="mt-3.5 space-y-3.5">
                     {foodAndDrinks.map((item) => (
                       <div
                         key={item.id}
-                        className="group relative rounded-xl border border-white/8 bg-white/[.025] p-3.5 transition-all hover:border-[#d5b582]/40 hover:bg-white/[.05]"
+                        className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#d5b582]/40 hover:bg-white/[.05] shadow-sm"
                       >
                         <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-start gap-3">
-                            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#d5b582]/10 text-[#d5b582]">
-                              {item.subCategory === "Bar" ? <Wine size={20} /> : <Utensils size={20} />}
+                          <div className="flex items-start gap-3.5">
+                            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#d5b582]/12 text-[#d5b582] border border-[#d5b582]/25 shadow-inner">
+                              {item.subCategory === "Bar" ? <Wine size={22} /> : <Utensils size={22} />}
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="rounded bg-[#d5b582]/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#d5b582]">
+                                <span className="rounded bg-[#d5b582]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#d5b582]">
                                   {item.subCategory}
                                 </span>
-                                <h4 className="text-sm font-semibold text-[#fcf5e8]">{item.name}</h4>
+                                <h4 className="text-base font-semibold text-[#fcf5e8]">{item.name}</h4>
                               </div>
-                              <div className="sr-muted mt-1 text-[11px]">{item.meta}</div>
-                              <div className="mt-1.5 flex items-center gap-2 text-[10px] text-[#d5b582]">
-                                <span>{item.price}</span>
+                              <div className="mt-1 text-xs sm:text-sm text-[#c8d9d2] leading-relaxed">{item.meta}</div>
+                              <div className="mt-2 flex items-center gap-2 text-xs text-[#d5b582]">
+                                <span className="font-semibold">{item.price}</span>
                                 <span>·</span>
-                                <span className="text-[#8ca6a1]">{item.location}</span>
+                                <span className="text-[#a4c0ba]">{item.location}</span>
                               </div>
                             </div>
                           </div>
                           <StatusChip tone={item.tone}>{item.state}</StatusChip>
                         </div>
-                        <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-2">
-                          <span className="text-[10px] text-[#8ca6a1]">Complimentary table seating for in-house guests</span>
+                        <div className="mt-3.5 flex items-center justify-between border-t border-white/6 pt-2.5">
+                          <span className="text-xs text-[#9eb6b0]">Complimentary table seating for in-house guests</span>
                           <div className="flex items-center gap-2">
                             {item.id === "dining-1" && (
                               <button
-                                className="flex items-center gap-1.5 rounded-lg border border-[#d5b582]/40 bg-white/[.04] px-2.5 py-1 text-[11px] font-semibold text-[#fcf5e8] transition-all hover:bg-white/[.09] hover:border-[#d5b582] shadow-sm"
+                                className="flex items-center gap-1.5 rounded-lg border border-[#d5b582]/40 bg-white/[.04] px-3 py-1.5 text-xs font-semibold text-[#fcf5e8] transition-all hover:bg-white/[.09] hover:border-[#d5b582] shadow-sm"
                                 onClick={() => setShowCoveMenu(true)}
                               >
-                                <BookOpen size={12} className="text-[#d5b582]" />
+                                <BookOpen size={13} className="text-[#d5b582]" />
                                 <span>View Menu</span>
                               </button>
                             )}
                             {item.id === "bar-1" && (
                               <button
-                                className="flex items-center gap-1.5 rounded-lg border border-[#d5b582]/40 bg-white/[.04] px-2.5 py-1 text-[11px] font-semibold text-[#fcf5e8] transition-all hover:bg-white/[.09] hover:border-[#d5b582] shadow-sm"
+                                className="flex items-center gap-1.5 rounded-lg border border-[#d5b582]/40 bg-white/[.04] px-3 py-1.5 text-xs font-semibold text-[#fcf5e8] transition-all hover:bg-white/[.09] hover:border-[#d5b582] shadow-sm"
                                 onClick={() => setShowBarMenu(true)}
                               >
-                                <Wine size={12} className="text-[#d5b582]" />
+                                <Wine size={13} className="text-[#d5b582]" />
                                 <span>View Bar Menu</span>
                               </button>
                             )}
                             {item.id === "brasserie-1" && (
                               <button
-                                className="flex items-center gap-1.5 rounded-lg border border-[#d5b582]/40 bg-white/[.04] px-2.5 py-1 text-[11px] font-semibold text-[#fcf5e8] transition-all hover:bg-white/[.09] hover:border-[#d5b582] shadow-sm"
+                                className="flex items-center gap-1.5 rounded-lg border border-[#d5b582]/40 bg-white/[.04] px-3 py-1.5 text-xs font-semibold text-[#fcf5e8] transition-all hover:bg-white/[.09] hover:border-[#d5b582] shadow-sm"
                                 onClick={() => setShowVerandahMenu(true)}
                               >
-                                <Coffee size={12} className="text-[#d5b582]" />
+                                <Coffee size={13} className="text-[#d5b582]" />
                                 <span>View Menu</span>
                               </button>
                             )}
                             {item.id === "pureveg-1" && (
                               <button
-                                className="flex items-center gap-1.5 rounded-lg border border-[#8fd6c2]/50 bg-[#8fd6c2]/[.08] px-2.5 py-1 text-[11px] font-semibold text-[#8fd6c2] transition-all hover:bg-[#8fd6c2]/20 hover:border-[#8fd6c2] shadow-sm"
+                                className="flex items-center gap-1.5 rounded-lg border border-[#8fd6c2]/50 bg-[#8fd6c2]/[.08] px-3 py-1.5 text-xs font-semibold text-[#8fd6c2] transition-all hover:bg-[#8fd6c2]/20 hover:border-[#8fd6c2] shadow-sm"
                                 onClick={() => setShowRasoiMenu(true)}
                               >
-                                <BookOpen size={12} className="text-[#8fd6c2]" />
+                                <BookOpen size={13} className="text-[#8fd6c2]" />
                                 <span>View Pure Veg Menu</span>
                               </button>
                             )}
                             <button
-                              className="rounded-lg bg-[#d5b582]/15 px-3 py-1 text-[11px] font-semibold text-[#d5b582] transition-colors hover:bg-[#d5b582] hover:text-[#122020]"
+                              className="rounded-lg bg-[#d5b582]/20 px-3.5 py-1.5 text-xs font-semibold text-[#d5b582] transition-colors hover:bg-[#d5b582] hover:text-[#122020]"
                               onClick={() => setBookingItem(item)}
                             >
                               {item.subCategory === "Bar" ? "Reserve Lounge" : "Reserve Table"}
@@ -2429,46 +2482,46 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
               {/* SECTION: INDOOR GAMES */}
               {(selectedCategory === "All" || selectedCategory === "Indoor Games") && (
                 <div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                     <div className="flex items-center gap-2">
                       <span className="text-base font-bold text-[#d5b582]">🎱 Indoor Games</span>
-                      <span className="text-[11px] text-[#8ca6a1]">(Snooker, Pool, Carrom)</span>
+                      <span className="text-xs text-[#a8bfb8]">(Snooker, Pool, Carrom)</span>
                     </div>
                     <StatusChip tone="teal">{indoorGames.length} Activities</StatusChip>
                   </div>
 
-                  <div className="mt-3 space-y-3">
+                  <div className="mt-3.5 space-y-3.5">
                     {indoorGames.map((game) => (
                       <div
                         key={game.id}
-                        className="group relative rounded-xl border border-white/8 bg-white/[.025] p-3.5 transition-all hover:border-[#d5b582]/40 hover:bg-white/[.05]"
+                        className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#d5b582]/40 hover:bg-white/[.05] shadow-sm"
                       >
                         <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-start gap-3">
-                            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#d5b582]/10 text-[#d5b582]">
-                              <Sparkles size={20} />
+                          <div className="flex items-start gap-3.5">
+                            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#d5b582]/12 text-[#d5b582] border border-[#d5b582]/25 shadow-inner">
+                              <Sparkles size={22} />
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="rounded bg-[#d5b582]/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#d5b582]">
+                                <span className="rounded bg-[#d5b582]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#d5b582]">
                                   {game.subCategory}
                                 </span>
-                                <h4 className="text-sm font-semibold text-[#fcf5e8]">{game.name}</h4>
+                                <h4 className="text-base font-semibold text-[#fcf5e8]">{game.name}</h4>
                               </div>
-                              <div className="sr-muted mt-1 text-[11px]">{game.meta}</div>
-                              <div className="mt-1.5 flex items-center gap-2 text-[10px] text-[#d5b582]">
-                                <span>{game.price}</span>
+                              <div className="mt-1 text-xs sm:text-sm text-[#c8d9d2] leading-relaxed">{game.meta}</div>
+                              <div className="mt-2 flex items-center gap-2 text-xs text-[#d5b582]">
+                                <span className="font-semibold">{game.price}</span>
                                 <span>·</span>
-                                <span className="text-[#8ca6a1]">{game.location}</span>
+                                <span className="text-[#a4c0ba]">{game.location}</span>
                               </div>
                             </div>
                           </div>
                           <StatusChip tone={game.tone}>{game.state}</StatusChip>
                         </div>
-                        <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-2">
-                          <span className="text-[10px] text-[#8ca6a1]">Instant slot reservation</span>
+                        <div className="mt-3.5 flex items-center justify-between border-t border-white/6 pt-2.5">
+                          <span className="text-xs text-[#9eb6b0]">Instant slot reservation</span>
                           <button
-                            className="rounded-lg bg-[#d5b582]/15 px-3 py-1 text-[11px] font-semibold text-[#d5b582] transition-colors hover:bg-[#d5b582] hover:text-[#122020]"
+                            className="rounded-lg bg-[#d5b582]/20 px-3.5 py-1.5 text-xs font-semibold text-[#d5b582] transition-colors hover:bg-[#d5b582] hover:text-[#122020]"
                             onClick={() => setBookingItem(game)}
                           >
                             Book Slot
@@ -2483,46 +2536,46 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
               {/* SECTION: OUTDOOR GAMES */}
               {(selectedCategory === "All" || selectedCategory === "Outdoor Games") && (
                 <div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                     <div className="flex items-center gap-2">
                       <span className="text-base font-bold text-[#8fd6c2]">🏏 Outdoor Games</span>
-                      <span className="text-[11px] text-[#8ca6a1]">(Cricket, Badminton, Golf)</span>
+                      <span className="text-xs text-[#a8bfb8]">(Cricket, Badminton, Golf)</span>
                     </div>
                     <StatusChip tone="teal">{outdoorGames.length} Sports</StatusChip>
                   </div>
 
-                  <div className="mt-3 space-y-3">
+                  <div className="mt-3.5 space-y-3.5">
                     {outdoorGames.map((game) => (
                       <div
                         key={game.id}
-                        className="group relative rounded-xl border border-white/8 bg-white/[.025] p-3.5 transition-all hover:border-[#8fd6c2]/40 hover:bg-white/[.05]"
+                        className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#8fd6c2]/40 hover:bg-white/[.05] shadow-sm"
                       >
                         <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-start gap-3">
-                            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#8fd6c2]/10 text-[#8fd6c2]">
-                              <Target size={20} />
+                          <div className="flex items-start gap-3.5">
+                            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#8fd6c2]/12 text-[#8fd6c2] border border-[#8fd6c2]/25 shadow-inner">
+                              <Target size={22} />
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="rounded bg-[#8fd6c2]/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#8fd6c2]">
+                                <span className="rounded bg-[#8fd6c2]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8fd6c2]">
                                   {game.subCategory}
                                 </span>
-                                <h4 className="text-sm font-semibold text-[#fcf5e8]">{game.name}</h4>
+                                <h4 className="text-base font-semibold text-[#fcf5e8]">{game.name}</h4>
                               </div>
-                              <div className="sr-muted mt-1 text-[11px]">{game.meta}</div>
-                              <div className="mt-1.5 flex items-center gap-2 text-[10px] text-[#8fd6c2]">
-                                <span>{game.price}</span>
+                              <div className="mt-1 text-xs sm:text-sm text-[#c8d9d2] leading-relaxed">{game.meta}</div>
+                              <div className="mt-2 flex items-center gap-2 text-xs text-[#8fd6c2]">
+                                <span className="font-semibold">{game.price}</span>
                                 <span>·</span>
-                                <span className="text-[#8ca6a1]">{game.location}</span>
+                                <span className="text-[#a4c0ba]">{game.location}</span>
                               </div>
                             </div>
                           </div>
                           <StatusChip tone={game.tone}>{game.state}</StatusChip>
                         </div>
-                        <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-2">
-                          <span className="text-[10px] text-[#8ca6a1]">Complimentary equipment provided</span>
+                        <div className="mt-3.5 flex items-center justify-between border-t border-white/6 pt-2.5">
+                          <span className="text-xs text-[#9eb6b0]">Complimentary equipment provided</span>
                           <button
-                            className="rounded-lg bg-[#8fd6c2]/15 px-3 py-1 text-[11px] font-semibold text-[#8fd6c2] transition-colors hover:bg-[#8fd6c2] hover:text-[#122020]"
+                            className="rounded-lg bg-[#8fd6c2]/20 px-3.5 py-1.5 text-xs font-semibold text-[#8fd6c2] transition-colors hover:bg-[#8fd6c2] hover:text-[#122020]"
                             onClick={() => setBookingItem(game)}
                           >
                             Book Pitch / Court
@@ -2537,46 +2590,46 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
               {/* SECTION: WELLNESS & SPA */}
               {(selectedCategory === "All" || selectedCategory === "Wellness") && (
                 <div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                     <div className="flex items-center gap-2">
                       <span className="text-base font-bold text-[#e9bc73]">🌿 Wellness & Leisure</span>
-                      <span className="text-[11px] text-[#8ca6a1]">(Spa, Yoga, Daybeds)</span>
+                      <span className="text-xs text-[#a8bfb8]">(Spa, Yoga, Daybeds)</span>
                     </div>
                     <StatusChip tone="amber">Popular</StatusChip>
                   </div>
 
-                  <div className="mt-3 space-y-3">
+                  <div className="mt-3.5 space-y-3.5">
                     {wellnessAmenities.map((item) => (
                       <div
                         key={item.id}
-                        className="group relative rounded-xl border border-white/8 bg-white/[.025] p-3.5 transition-all hover:border-[#e9bc73]/40 hover:bg-white/[.05]"
+                        className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#e9bc73]/40 hover:bg-white/[.05] shadow-sm"
                       >
                         <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-start gap-3">
-                            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#e9bc73]/10 text-[#e9bc73]">
-                              <Sparkles size={20} />
+                          <div className="flex items-start gap-3.5">
+                            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#e9bc73]/12 text-[#e9bc73] border border-[#e9bc73]/25 shadow-inner">
+                              <Sparkles size={22} />
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="rounded bg-[#e9bc73]/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#e9bc73]">
+                                <span className="rounded bg-[#e9bc73]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#e9bc73]">
                                   {item.subCategory}
                                 </span>
-                                <h4 className="text-sm font-semibold text-[#fcf5e8]">{item.name}</h4>
+                                <h4 className="text-base font-semibold text-[#fcf5e8]">{item.name}</h4>
                               </div>
-                              <div className="sr-muted mt-1 text-[11px]">{item.meta}</div>
-                              <div className="mt-1.5 flex items-center gap-2 text-[10px] text-[#e9bc73]">
-                                <span>{item.price}</span>
+                              <div className="mt-1 text-xs sm:text-sm text-[#c8d9d2] leading-relaxed">{item.meta}</div>
+                              <div className="mt-2 flex items-center gap-2 text-xs text-[#e9bc73]">
+                                <span className="font-semibold">{item.price}</span>
                                 <span>·</span>
-                                <span className="text-[#8ca6a1]">{item.location}</span>
+                                <span className="text-[#a4c0ba]">{item.location}</span>
                               </div>
                             </div>
                           </div>
                           <StatusChip tone={item.tone}>{item.state}</StatusChip>
                         </div>
-                        <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-2">
-                          <span className="text-[10px] text-[#8ca6a1]">Lotus Sanctuary access</span>
+                        <div className="mt-3.5 flex items-center justify-between border-t border-white/6 pt-2.5">
+                          <span className="text-xs text-[#9eb6b0]">Lotus Sanctuary access</span>
                           <button
-                            className="rounded-lg bg-[#e9bc73]/15 px-3 py-1 text-[11px] font-semibold text-[#e9bc73] transition-colors hover:bg-[#e9bc73] hover:text-[#122020]"
+                            className="rounded-lg bg-[#e9bc73]/20 px-3.5 py-1.5 text-xs font-semibold text-[#e9bc73] transition-colors hover:bg-[#e9bc73] hover:text-[#122020]"
                             onClick={() => {
                               if (item.state === "Waitlist") {
                                 setPage("amenity-detail");

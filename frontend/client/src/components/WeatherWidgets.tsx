@@ -339,42 +339,44 @@ export function GuestWeatherCard({ setPage }: { setPage: (p: any) => void }) {
   const advisory = weather?.advisory;
 
   return (
-    <div className="mt-6 rounded-2xl border border-[#d5b582]/25 bg-gradient-to-br from-[#d5b582]/[.08] to-white/[.02] p-4 text-left shadow-lg">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-xl bg-[#d5b582]/15 text-[#d5b582]">
-            <WeatherIcon icon={current?.icon || "sun"} size={22} />
+    <div className="mt-6 rounded-2xl border border-[#d5b582]/30 bg-gradient-to-br from-[#d5b582]/[.10] via-[#1a2d2a]/80 to-[#122020] p-4 text-left shadow-lg">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3.5">
+          <div className="grid h-12 w-12 place-items-center rounded-xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner">
+            <WeatherIcon icon={current?.icon || "sun"} size={24} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-[#fcf5e8]">{current?.temp_c ?? 28.4}°C</span>
-              <span className="rounded bg-[#d5b582]/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#d5b582]">
-                {current?.tag || "Goa Coast"}
+              <span className="text-2xl font-bold tracking-tight text-[#fcf5e8]">{current?.temp_c ?? 28.4}°C</span>
+              <span className="rounded-md bg-[#d5b582]/20 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-[#d5b582] border border-[#d5b582]/30">
+                {current?.tag || "CLEAR"}
               </span>
             </div>
-            <div className="sr-muted mt-0.5 text-xs text-[#ebe7dc]">{current?.condition || "Sunny & Coastal Breeze"}</div>
+            <div className="mt-0.5 text-sm font-medium text-[#d9e7e1]">{current?.condition || "Sunny & Coastal Breeze"}</div>
           </div>
         </div>
-        <div className="text-right text-[10px] text-[#8ca6a1]">
-          <div>High {current?.max_temp_c ?? 31}°C</div>
-          <div>Low {current?.min_temp_c ?? 24}°C</div>
+        <div className="text-right text-xs font-medium text-[#a7c4bc] space-y-0.5">
+          <div>High <span className="font-semibold text-[#fcf5e8]">{current?.max_temp_c ?? 31.5}°C</span></div>
+          <div>Low <span className="font-semibold text-[#fcf5e8]">{current?.min_temp_c ?? 24}°C</span></div>
         </div>
       </div>
 
-      <div className="mt-3.5 rounded-xl bg-black/20 p-3">
-        <div className="flex items-center gap-2 text-[11px] font-semibold text-[#d5b582]">
-          <Sparkles size={13} /> Weather-Curated Recommendation
+      <div className="mt-3.5 rounded-xl bg-black/35 p-3.5 border border-white/6">
+        <div className="flex items-center gap-2 text-xs font-bold text-[#d5b582]">
+          <Sparkles size={14} className="text-[#d5b582]" />
+          <span>Weather-Curated Recommendation</span>
         </div>
-        <p className="mt-1 text-[11px] leading-5 text-[#ebe7dc]">
-          {advisory?.guest_recommendation || "Delightful 28°C weather! Excellent conditions for Cricket nets, Badminton court, or Golf putting green."}
+        <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-[#e5ede8]">
+          {advisory?.guest_recommendation || "Delightful 28.2°C coastal weather! Excellent conditions for Cricket nets, Badminton court, and Golf putting."}
         </p>
-        <div className="mt-2.5 flex items-center justify-between border-t border-white/6 pt-2">
-          <span className="text-[10px] text-[#8ca6a1]">Want to play or relax?</span>
+        <div className="mt-3 flex items-center justify-between border-t border-white/8 pt-2.5">
+          <span className="text-xs text-[#9eb6b0]">Want to play or relax?</span>
           <button
             onClick={() => setPage("amenities")}
-            className="text-[11px] font-semibold text-[#d5b582] hover:underline"
+            className="flex items-center gap-1 text-xs font-bold text-[#d5b582] transition-colors hover:text-[#eed2a4]"
           >
-            Explore Amenities →
+            <span>Explore Amenities</span>
+            <span className="text-sm">→</span>
           </button>
         </div>
       </div>
