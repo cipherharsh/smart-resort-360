@@ -446,7 +446,7 @@ function GuestHome({setPage}:{setPage:(p:Page)=>void}) {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-xs font-bold uppercase tracking-wider text-[#d5b582]">Sunridge Cove</div>
-                <div className="mt-1 text-base font-semibold text-[#fcf5e8]">Room 101 · Until 29 Sep</div>
+                <div className="mt-1 text-base font-semibold text-[#fcf5e8]">Room 101 · Until 30 Sep</div>
               </div>
               <StatusChip tone="amber">Day 2 of 5</StatusChip>
             </div>
