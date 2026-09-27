@@ -53,7 +53,7 @@ void seedAmenities; void seedAssets; void seedBookings; void seedUsers;
 type Role = "manager" | "staff" | "guest";
 type ManagerPage = "command" | "bookings" | "decisions" | "maintenance" | "amenity" | "forecast" | "revenue" | "workforce" | "sentiment" | "whatif" | "property-health" | "ai-map" | "connected" | "operations" | "emergency" | "notifications" | "profile" | "settings";
 type StaffPage = "staff-home" | "tasks" | "schedule" | "dispatch" | "emergency" | "notifications";
-type GuestPage = "guest-home" | "concierge" | "amenities" | "amenity-detail" | "waitlist" | "offer" | "buggy" | "folio" | "checkout" | "sos" | "profile";
+type GuestPage = "guest-home" | "concierge" | "amenities" | "amenity-detail" | "reservations" | "waitlist" | "offer" | "buggy" | "folio" | "checkout" | "sos" | "profile";
 type Page = ManagerPage | StaffPage | GuestPage;
 
 type DemoState = {
@@ -85,7 +85,17 @@ const staffNav = [
   {id:"staff-home", label:"Staff Home", icon:HomeIcon}, {id:"tasks", label:"My Tasks", icon:ListFilter}, {id:"schedule", label:"Schedule", icon:CalendarDays}, {id:"dispatch", label:"Dispatch", icon:Building2}, {id:"emergency", label:"Emergency", icon:ShieldAlert}, {id:"notifications", label:"Notifications", icon:Bell}
 ] as const;
 const guestNav = [
-  {id:"guest-home", label:"My Stay", icon:HomeIcon}, {id:"concierge", label:"AI Concierge", icon:Bot}, {id:"amenities", label:"Amenities", icon:Sparkles}, {id:"waitlist", label:"My Waitlist", icon:Timer}, {id:"offer", label:"Current Offer", icon:TicketCheck}, {id:"buggy", label:"Buggy", icon:ArrowRight}, {id:"folio", label:"Digital Folio", icon:Receipt}, {id:"checkout", label:"Checkout", icon:CheckCircle2}, {id:"sos", label:"Guest SOS", icon:ShieldAlert}, {id:"profile", label:"Profile", icon:UserRound}
+  {id:"guest-home", label:"My Stay", icon:HomeIcon},
+  {id:"concierge", label:"AI Concierge", icon:Bot},
+  {id:"amenities", label:"Amenities", icon:Sparkles},
+  {id:"reservations", label:"My Reservations", icon:CalendarDays},
+  {id:"waitlist", label:"My Waitlist", icon:Timer},
+  {id:"offer", label:"Current Offer", icon:TicketCheck},
+  {id:"buggy", label:"Buggy", icon:ArrowRight},
+  {id:"folio", label:"Digital Folio", icon:Receipt},
+  {id:"checkout", label:"Checkout", icon:CheckCircle2},
+  {id:"sos", label:"Guest SOS", icon:ShieldAlert},
+  {id:"profile", label:"Profile", icon:UserRound}
 ] as const;
 
 function Logo({compact=false}:{compact?:boolean}) {
@@ -457,11 +467,34 @@ function GuestHome({setPage}:{setPage:(p:Page)=>void}) {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <GuestAction icon={Bot} label="Ask concierge" onClick={()=>setPage("concierge")}/>
               <GuestAction icon={Sparkles} label="Explore amenities" onClick={()=>setPage("amenities")}/>
-              <GuestAction icon={CalendarDays} label="My waitlist" onClick={()=>setPage("waitlist")}/>
+              <GuestAction icon={CalendarDays} label="My reservations" onClick={()=>setPage("reservations")}/>
               <GuestAction icon={ArrowRight} label="Request buggy" onClick={()=>setPage("buggy")}/>
             </div>
+
+            {/* Active Today's Reservation Shortcut Card */}
+            <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-950/40 via-emerald-900/15 to-transparent p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-300">Today's Reservations</span>
+                </div>
+                <button
+                  onClick={() => setPage("reservations")}
+                  className="text-xs font-bold text-[#d5b582] hover:underline flex items-center gap-1"
+                >
+                  <span>View all</span>
+                  <ArrowRight size={12} />
+                </button>
+              </div>
+              <div className="mt-2 text-xs font-semibold text-[#fcf5e8]">
+                🍽️ The Cove Seafood & Grill · Today at 20:30 (Table for 2)
+              </div>
+              <div className="mt-1 text-[11px] text-[#8ca6a1]">
+                Oceanfront Terrace · Anniversary celebration setup
+              </div>
+            </div>
             
-            <div className="mt-6 rounded-2xl border border-[#d5b582]/25 bg-gradient-to-br from-[#d5b582]/[.08] to-white/[.02] p-4.5 shadow-md">
+            <div className="mt-4 rounded-2xl border border-[#d5b582]/25 bg-gradient-to-br from-[#d5b582]/[.08] to-white/[.02] p-4.5 shadow-md">
               <div className="flex items-start gap-3.5">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner">
                   <Sparkles size={18} />
@@ -504,13 +537,17 @@ function GuestBottom({active,setPage}:{active:string;setPage:(p:Page)=>void}) {
         <HomeIcon size={18}/>
         <span className="text-xs font-medium">Home</span>
       </button>
-      <button className={active==="concierge"?"active":""} onClick={()=>setPage("concierge")}>
-        <Bot size={18}/>
-        <span className="text-xs font-medium">Concierge</span>
+      <button className={active==="reservations"?"active":""} onClick={()=>setPage("reservations")}>
+        <CalendarDays size={18}/>
+        <span className="text-xs font-medium">Bookings</span>
       </button>
       <button className={active==="amenities"?"active":""} onClick={()=>setPage("amenities")}>
         <Sparkles size={18}/>
         <span className="text-xs font-medium">Amenities</span>
+      </button>
+      <button className={active==="concierge"?"active":""} onClick={()=>setPage("concierge")}>
+        <Bot size={18}/>
+        <span className="text-xs font-medium">Concierge</span>
       </button>
       <button className={active==="profile"?"active":""} onClick={()=>setPage("profile")}>
         <UserRound size={18}/>
@@ -2130,6 +2167,92 @@ interface TableReservation {
   reservedAt: string;
 }
 
+export interface GuestReservationRecord {
+  id: string;
+  venueId: string;
+  venueName: string;
+  category: "Dining" | "Bar" | "Wellness" | "Sports" | "Activity";
+  iconType: "utensils" | "wine" | "coffee" | "sparkles" | "target";
+  guests: number;
+  timeSlot: string;
+  date: string;
+  seatingArea: string;
+  occasion?: string;
+  specialRequests?: string;
+  price?: string;
+  location: string;
+  status: "Confirmed" | "Ready" | "Completed" | "Waitlisted";
+}
+
+const INITIAL_GUEST_RESERVATIONS: GuestReservationRecord[] = [
+  {
+    id: "RES-8421",
+    venueId: "dining-1",
+    venueName: "The Cove Signature Seafood & Grill",
+    category: "Dining",
+    iconType: "utensils",
+    guests: 2,
+    timeSlot: "20:30 (Prime Royal Dinner)",
+    date: "Today · 26 Sep 2026",
+    seatingArea: "Oceanfront Terrace",
+    occasion: "💍 Anniversary / Romantic Date",
+    specialRequests: "Candlelight window table, fresh rose petal setup with sea view",
+    price: "À la carte (Avg ₹2,200 for 2)",
+    location: "Beachfront Ocean Terrace",
+    status: "Confirmed"
+  },
+  {
+    id: "RES-3190",
+    venueId: "spa-1",
+    venueName: "Lotus Luxury Ayurvedic Spa & Steam",
+    category: "Wellness",
+    iconType: "sparkles",
+    guests: 1,
+    timeSlot: "16:00 (Sunset Relaxation)",
+    date: "Today · 26 Sep 2026",
+    seatingArea: "Ayurvedic Suite 4",
+    occasion: "🌿 Wellness Ritual",
+    specialRequests: "Warm herbal oil massage & Himalayan steam session",
+    price: "₹3,500 / 60min",
+    location: "Lotus Wellness Sanctuary Level 1",
+    status: "Confirmed"
+  },
+  {
+    id: "RES-1892",
+    venueId: "snooker-1",
+    venueName: "Royal Snooker Lounge",
+    category: "Sports",
+    iconType: "sparkles",
+    guests: 2,
+    timeSlot: "14:00 (Afternoon Game)",
+    date: "Today · 26 Sep 2026",
+    seatingArea: "Table 1 (Tournament 12ft Slate)",
+    occasion: "🎱 Leisure Sports",
+    specialRequests: "Strachan 6811 tournament cloth & pro cue set reserved",
+    price: "₹800/hr",
+    location: "Clubhouse Level 2",
+    status: "Confirmed"
+  }
+];
+
+function getStoredGuestReservations(): GuestReservationRecord[] {
+  try {
+    const raw = localStorage.getItem("sr_guest_reservations_v4");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  return INITIAL_GUEST_RESERVATIONS;
+}
+
+function saveStoredGuestReservations(list: GuestReservationRecord[]) {
+  try {
+    localStorage.setItem("sr_guest_reservations_v4", JSON.stringify(list));
+    window.dispatchEvent(new CustomEvent("sr_reservations_updated"));
+  } catch (e) {}
+}
+
 function TableReservationModal({
   item,
   existingReservation,
@@ -2450,11 +2573,25 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
   const { weather } = useLiveWeather();
   const [selectedCategory, setSelectedCategory] = useState<"All" | "Food & Drinks" | "Indoor Games" | "Outdoor Games" | "Wellness">("All");
   const [bookingItem, setBookingItem] = useState<any>(null);
-  const [tableReservations, setTableReservations] = useState<Record<string, TableReservation>>({});
+  const [allReservations, setAllReservations] = useState<GuestReservationRecord[]>(getStoredGuestReservations);
   const [showCoveMenu, setShowCoveMenu] = useState<boolean>(false);
   const [showBarMenu, setShowBarMenu] = useState<boolean>(false);
   const [showVerandahMenu, setShowVerandahMenu] = useState<boolean>(false);
   const [showRasoiMenu, setShowRasoiMenu] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleUpdate = () => setAllReservations(getStoredGuestReservations());
+    window.addEventListener("sr_reservations_updated", handleUpdate);
+    return () => window.removeEventListener("sr_reservations_updated", handleUpdate);
+  }, []);
+
+  const tableReservations = useMemo(() => {
+    const map: Record<string, GuestReservationRecord> = {};
+    allReservations.forEach(r => {
+      map[r.venueId] = r;
+    });
+    return map;
+  }, [allReservations]);
 
   const foodAndDrinks = [
     {
@@ -2625,6 +2762,25 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
   ];
 
   const confirmBooking = (item: any) => {
+    const newRecord: GuestReservationRecord = {
+      id: `RES-${Math.floor(1000 + Math.random() * 9000)}`,
+      venueId: item.id,
+      venueName: item.name,
+      category: item.gameType === "Wellness" ? "Wellness" : item.gameType === "Indoor Games" ? "Sports" : "Activity",
+      iconType: item.gameType === "Wellness" ? "sparkles" : "target",
+      guests: 2,
+      timeSlot: "15:00 (Today Slot)",
+      date: "Today · 26 Sep 2026",
+      seatingArea: item.location,
+      occasion: "Resort Leisure",
+      specialRequests: "Standard amenity booking reserved",
+      price: item.price,
+      location: item.location,
+      status: "Confirmed"
+    };
+    const updated = [newRecord, ...allReservations.filter(r => r.venueId !== item.id)];
+    saveStoredGuestReservations(updated);
+    setAllReservations(updated);
     toast.success(`Booking Confirmed for ${item.name}!`, {
       description: `Category: ${item.gameType} · ${item.subCategory} | Fee: ${item.price} | Location: ${item.location}`
     });
@@ -2636,14 +2792,23 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
       <div className="sr-phone-wrap">
         <div className="sr-phone-card">
           <div className="p-5">
-            <div className="flex items-center gap-3">
-              <button className="sr-button-quiet" onClick={() => setPage("guest-home")}>
-                <ArrowLeft size={17} />
-              </button>
-              <div>
-                <div className="sr-kicker text-[#d5b582]">Sunridge Cove</div>
-                <h1 className="mt-1 font-serif text-3xl">Explore amenities</h1>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button className="sr-button-quiet" onClick={() => setPage("guest-home")}>
+                  <ArrowLeft size={17} />
+                </button>
+                <div>
+                  <div className="sr-kicker text-[#d5b582]">Sunridge Cove</div>
+                  <h1 className="mt-1 font-serif text-3xl">Explore amenities</h1>
+                </div>
               </div>
+              <button
+                onClick={() => setPage("reservations")}
+                className="flex items-center gap-1.5 rounded-xl border border-[#d5b582]/30 bg-[#d5b582]/10 px-3 py-1.5 text-xs font-semibold text-[#d5b582] hover:bg-[#d5b582]/20"
+              >
+                <CalendarDays size={13} />
+                <span>My Bookings ({allReservations.length})</span>
+              </button>
             </div>
 
             {/* Live Weather Advisory for Amenities */}
@@ -2691,18 +2856,34 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                   existingReservation={tableReservations[bookingItem.id]}
                   onClose={() => setBookingItem(null)}
                   onConfirm={(res) => {
-                    setTableReservations(prev => ({ ...prev, [res.venueId]: res }));
+                    const newRecord: GuestReservationRecord = {
+                      id: res.id,
+                      venueId: res.venueId,
+                      venueName: res.venueName,
+                      category: bookingItem.subCategory === "Bar" ? "Bar" : "Dining",
+                      iconType: bookingItem.subCategory === "Bar" ? "wine" : "utensils",
+                      guests: res.guests,
+                      timeSlot: res.timeSlot,
+                      date: "Today · 26 Sep 2026",
+                      seatingArea: res.seatingArea,
+                      occasion: res.occasion,
+                      specialRequests: res.specialRequests,
+                      price: bookingItem.price,
+                      location: bookingItem.location,
+                      status: "Confirmed"
+                    };
+                    const updated = [newRecord, ...allReservations.filter(r => r.venueId !== res.venueId)];
+                    saveStoredGuestReservations(updated);
+                    setAllReservations(updated);
                     setBookingItem(null);
                     toast.success("Table Reserved Successfully!", {
                       description: `Reserved for ${res.guests} ${res.guests === 1 ? 'guest' : 'guests'} at ${res.venueName} · ${res.timeSlot} (${res.seatingArea})`
                     });
                   }}
                   onCancelReservation={(venueId) => {
-                    setTableReservations(prev => {
-                      const next = { ...prev };
-                      delete next[venueId];
-                      return next;
-                    });
+                    const updated = allReservations.filter(r => r.venueId !== venueId);
+                    saveStoredGuestReservations(updated);
+                    setAllReservations(updated);
                     setBookingItem(null);
                     toast.info("Reservation Cancelled", {
                       description: "Your table reservation for today has been cancelled."
@@ -3077,9 +3258,358 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
     </main>
   );
 }
+function GuestMyReservations({ setPage }: { setPage: (p: Page) => void }) {
+  const [reservations, setReservations] = useState<GuestReservationRecord[]>(getStoredGuestReservations);
+  const [selectedFilter, setSelectedFilter] = useState<"All" | "Dining & Bars" | "Wellness" | "Sports">("All");
+  const [editingReservation, setEditingReservation] = useState<GuestReservationRecord | null>(null);
+  const [showCoveMenu, setShowCoveMenu] = useState(false);
+  const [showBarMenu, setShowBarMenu] = useState(false);
+  const [showVerandahMenu, setShowVerandahMenu] = useState(false);
+  const [showRasoiMenu, setShowRasoiMenu] = useState(false);
+
+  useEffect(() => {
+    const handleUpdate = () => setReservations(getStoredGuestReservations());
+    window.addEventListener("sr_reservations_updated", handleUpdate);
+    return () => window.removeEventListener("sr_reservations_updated", handleUpdate);
+  }, []);
+
+  const filteredReservations = useMemo(() => {
+    if (selectedFilter === "All") return reservations;
+    if (selectedFilter === "Dining & Bars") return reservations.filter(r => r.category === "Dining" || r.category === "Bar");
+    if (selectedFilter === "Wellness") return reservations.filter(r => r.category === "Wellness");
+    if (selectedFilter === "Sports") return reservations.filter(r => r.category === "Sports" || r.category === "Activity");
+    return reservations;
+  }, [reservations, selectedFilter]);
+
+  const diningCount = useMemo(() => reservations.filter(r => r.category === "Dining" || r.category === "Bar").length, [reservations]);
+  const wellnessCount = useMemo(() => reservations.filter(r => r.category === "Wellness").length, [reservations]);
+  const sportsCount = useMemo(() => reservations.filter(r => r.category === "Sports" || r.category === "Activity").length, [reservations]);
+
+  const handleCancel = (id: string, name: string) => {
+    const updated = reservations.filter(r => r.id !== id);
+    saveStoredGuestReservations(updated);
+    setReservations(updated);
+    toast.info(`Reservation for ${name} has been cancelled.`);
+  };
+
+  const handleUpdateReservation = (updatedRes: TableReservation) => {
+    const updated = reservations.map(r => {
+      if (r.id === updatedRes.id || r.venueId === updatedRes.venueId) {
+        return {
+          ...r,
+          guests: updatedRes.guests,
+          timeSlot: updatedRes.timeSlot,
+          seatingArea: updatedRes.seatingArea,
+          occasion: updatedRes.occasion,
+          specialRequests: updatedRes.specialRequests
+        };
+      }
+      return r;
+    });
+    saveStoredGuestReservations(updated);
+    setReservations(updated);
+    setEditingReservation(null);
+    toast.success(`Reservation updated for ${updatedRes.venueName}!`, {
+      description: `New time: ${updatedRes.timeSlot} · ${updatedRes.guests} Guests`
+    });
+  };
+
+  const openVenueMenu = (venueId: string) => {
+    if (venueId === "dining-1") setShowCoveMenu(true);
+    else if (venueId === "bar-1") setShowBarMenu(true);
+    else if (venueId === "brasserie-1") setShowVerandahMenu(true);
+    else if (venueId === "pureveg-1") setShowRasoiMenu(true);
+    else setShowCoveMenu(true);
+  };
+
+  return (
+    <main className="sr-content">
+      <div className="sr-phone-wrap">
+        <div className="sr-phone-card">
+          <div className="p-5">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button className="sr-button-quiet" onClick={() => setPage("guest-home")}>
+                  <ArrowLeft size={17} />
+                </button>
+                <div>
+                  <div className="sr-kicker text-[#d5b582]">Room 101 · Authenticated Guest</div>
+                  <h1 className="mt-1 font-serif text-3xl">My Reservations</h1>
+                </div>
+              </div>
+              <button
+                onClick={() => setPage("amenities")}
+                className="flex items-center gap-1.5 rounded-xl border border-[#d5b582]/40 bg-[#d5b582]/15 px-3 py-1.5 text-xs font-bold text-[#d5b582] hover:bg-[#d5b582] hover:text-[#122020] transition-all shadow-sm"
+              >
+                <Plus size={13} />
+                <span>Book New</span>
+              </button>
+            </div>
+
+            {/* Today's Schedule Overview Banner */}
+            <div className="mt-4 rounded-2xl border border-[#d5b582]/30 bg-gradient-to-r from-[#d5b582]/15 via-[#1a2e2b] to-[#122020] p-4 shadow-md">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-[#d5b582]">
+                    📅 Today's Itinerary · 26 Sep (Day 2 of 5)
+                  </div>
+                  <div className="mt-1 text-base font-semibold text-[#fcf5e8]">
+                    {reservations.length === 0
+                      ? "No bookings scheduled for today"
+                      : `${reservations.length} Active ${reservations.length === 1 ? "Booking" : "Bookings"} Today`}
+                  </div>
+                </div>
+                <StatusChip tone="teal" pulse={reservations.length > 0}>
+                  {reservations.length > 0 ? "Confirmed" : "Ready"}
+                </StatusChip>
+              </div>
+              {reservations.length > 0 && (
+                <div className="mt-2.5 pt-2.5 border-t border-white/8 flex items-center gap-2 text-xs text-[#c4ded6]">
+                  <Clock3 size={13} className="text-[#d5b582] shrink-0" />
+                  <span>
+                    Next: <strong className="text-[#fcf5e8]">{reservations[0].timeSlot}</strong> · {reservations[0].venueName}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="mt-5 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {[
+                { id: "All", label: `All Today (${reservations.length})` },
+                { id: "Dining & Bars", label: `🍽️ Dining & Bars (${diningCount})` },
+                { id: "Wellness", label: `🌿 Wellness (${wellnessCount})` },
+                { id: "Sports", label: `🎱 Sports (${sportsCount})` }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setSelectedFilter(tab.id as any)}
+                  className={`shrink-0 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                    selectedFilter === tab.id
+                      ? "bg-[#d5b582] text-[#122020] shadow-md font-bold"
+                      : "border border-white/10 bg-white/[.04] text-[#ebe7dc] hover:bg-white/[.08]"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Reservations List */}
+            <div className="mt-5 space-y-4">
+              {filteredReservations.length === 0 ? (
+                <div className="sr-empty-state rounded-2xl border border-white/8 bg-white/[.02] p-8 text-center my-4">
+                  <CalendarDays size={28} className="mx-auto text-[#d5b582]/60" />
+                  <h3 className="mt-3 font-serif text-xl text-[#fcf5e8]">No Reservations in this Category</h3>
+                  <p className="sr-muted mt-1 text-xs max-w-xs mx-auto">
+                    You haven't reserved any slots for {selectedFilter} today. Explore our luxury amenities to reserve now.
+                  </p>
+                  <button
+                    className="sr-button mt-4 mx-auto text-xs"
+                    onClick={() => setPage("amenities")}
+                  >
+                    <Plus size={14} /> Explore & Reserve Amenities
+                  </button>
+                </div>
+              ) : (
+                filteredReservations.map((res) => (
+                  <div
+                    key={res.id}
+                    className="rounded-2xl border border-[#d5b582]/30 bg-gradient-to-br from-white/[.04] to-white/[.01] p-4.5 shadow-md transition-all hover:border-[#d5b582]/60"
+                  >
+                    {/* Top Row: Time Badge, Venue Name & Status */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="flex items-center gap-1.5 rounded-lg bg-[#d5b582] px-2.5 py-1 font-mono text-xs font-bold text-[#122020] shadow-sm">
+                            <Clock3 size={13} />
+                            <span>{res.timeSlot}</span>
+                          </span>
+                          <span className="rounded bg-white/10 px-2 py-0.5 text-[10px] font-bold text-[#c7d9d3]">
+                            {res.category === "Dining" ? "🍽️ Restaurant Table" : res.category === "Bar" ? "🍸 Lounge Bar" : res.category === "Wellness" ? "🌿 Wellness Spa" : "🎱 Activity Slot"}
+                          </span>
+                        </div>
+                        <h3 className="mt-2 font-serif text-lg font-semibold text-[#fcf5e8]">
+                          {res.venueName}
+                        </h3>
+                        <div className="mt-1 flex items-center gap-2 text-xs text-[#8ca6a1]">
+                          <MapPin size={13} className="text-[#d5b582]" />
+                          <span>{res.location}</span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1.5">
+                        <StatusChip tone="teal" pulse>
+                          {res.status} Today
+                        </StatusChip>
+                        <span className="font-mono text-[10px] text-[#8ca6a1]">#{res.id}</span>
+                      </div>
+                    </div>
+
+                    {/* Booking Details Matrix */}
+                    <div className="mt-3.5 rounded-xl border border-white/6 bg-black/20 p-3 grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span className="sr-muted text-[10px] uppercase tracking-wider block">Party Size</span>
+                        <span className="font-semibold text-[#fcf5e8] mt-0.5 block">
+                          👥 {res.guests} {res.guests === 1 ? "Guest" : "Guests"}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="sr-muted text-[10px] uppercase tracking-wider block">Seating Area</span>
+                        <span className="font-semibold text-[#fcf5e8] mt-0.5 block truncate">
+                          🪑 {res.seatingArea}
+                        </span>
+                      </div>
+                      {res.occasion && res.occasion !== "None" && res.occasion !== "Casual Dining" && (
+                        <div className="col-span-2 border-t border-white/6 pt-2">
+                          <span className="sr-muted text-[10px] uppercase tracking-wider block">Special Occasion</span>
+                          <span className="font-medium text-[#d5b582] mt-0.5 block">
+                            ✨ {res.occasion}
+                          </span>
+                        </div>
+                      )}
+                      {res.specialRequests && (
+                        <div className="col-span-2 border-t border-white/6 pt-2">
+                          <span className="sr-muted text-[10px] uppercase tracking-wider block">Custom Requests</span>
+                          <span className="text-[#d4ded7] text-[11px] mt-0.5 block italic">
+                            "{res.specialRequests}"
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-white/8 pt-3">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setEditingReservation(res)}
+                          className="rounded-lg border border-[#d5b582]/40 bg-[#d5b582]/10 px-3 py-1.5 text-xs font-semibold text-[#d5b582] hover:bg-[#d5b582] hover:text-[#122020] transition-colors"
+                        >
+                          ✏️ Modify Slot
+                        </button>
+                        <button
+                          onClick={() => handleCancel(res.id, res.venueName)}
+                          className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-300 hover:bg-red-500 hover:text-white transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {(res.category === "Dining" || res.category === "Bar") && (
+                          <button
+                            onClick={() => openVenueMenu(res.venueId)}
+                            className="rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-[#c4ded6] hover:bg-white/10"
+                          >
+                            📖 View Menu
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            toast.success(`Buggy requested to ${res.venueName}!`, {
+                              description: "Pickup from Room 101 dispatched to driver."
+                            });
+                            setPage("buggy");
+                          }}
+                          className="rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-[#8fd6c2] hover:bg-[#8fd6c2]/20"
+                        >
+                          🚗 Buggy
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Bottom Action to Book More */}
+            <div className="mt-6 text-center">
+              <button
+                className="sr-button-quiet text-xs font-semibold"
+                onClick={() => setPage("amenities")}
+              >
+                + Explore other dining & sports amenities
+              </button>
+            </div>
+          </div>
+          <GuestBottom active="reservations" setPage={setPage} />
+        </div>
+      </div>
+
+      {/* Editing Modal */}
+      {editingReservation && (
+        <TableReservationModal
+          item={{
+            id: editingReservation.venueId,
+            name: editingReservation.venueName,
+            subCategory: editingReservation.category === "Bar" ? "Bar" : "Restaurant",
+            location: editingReservation.location,
+            price: editingReservation.price || "À la carte"
+          }}
+          existingReservation={{
+            id: editingReservation.id,
+            venueId: editingReservation.venueId,
+            venueName: editingReservation.venueName,
+            guests: editingReservation.guests,
+            timeSlot: editingReservation.timeSlot,
+            seatingArea: editingReservation.seatingArea,
+            occasion: editingReservation.occasion,
+            specialRequests: editingReservation.specialRequests,
+            reservedAt: editingReservation.date
+          }}
+          onClose={() => setEditingReservation(null)}
+          onConfirm={handleUpdateReservation}
+          onCancelReservation={() => {
+            handleCancel(editingReservation.id, editingReservation.venueName);
+            setEditingReservation(null);
+          }}
+        />
+      )}
+
+      {/* Menus */}
+      {showCoveMenu && (
+        <CoveMenuModal
+          onClose={() => setShowCoveMenu(false)}
+          onReserve={() => {
+            setShowCoveMenu(false);
+            setPage("amenities");
+          }}
+        />
+      )}
+      {showBarMenu && (
+        <BarMenuModal
+          onClose={() => setShowBarMenu(false)}
+          onReserve={() => {
+            setShowBarMenu(false);
+            setPage("amenities");
+          }}
+        />
+      )}
+      {showVerandahMenu && (
+        <VerandahMenuModal
+          onClose={() => setShowVerandahMenu(false)}
+          onReserve={() => {
+            setShowVerandahMenu(false);
+            setPage("amenities");
+          }}
+        />
+      )}
+      {showRasoiMenu && (
+        <RasoiRoyalMenuModal
+          onClose={() => setShowRasoiMenu(false)}
+          onReserve={() => {
+            setShowRasoiMenu(false);
+            setPage("amenities");
+          }}
+        />
+      )}
+    </main>
+  );
+}
+
 function AmenityGuest({name,meta,state,tone,onClick}:{name:string;meta:string;state:string;tone:any;onClick:()=>void}) { return <button onClick={onClick} className="flex w-full items-center gap-3 rounded-xl border border-white/8 bg-white/[.025] p-3 text-left"><div className="h-16 w-16 overflow-hidden rounded-lg bg-gradient-to-br from-[#806a4d] to-[#272b25]"><div className="grid h-full place-items-center text-[#d5b582]"><Sparkles size={19}/></div></div><div className="min-w-0 flex-1"><div className="text-sm font-semibold">{name}</div><div className="sr-muted mt-1 text-[10px]">{meta}</div></div><StatusChip tone={tone}>{state}</StatusChip></button>; }
 
-function Connected({demo,setPage}:{demo:DemoState;setPage:(p:Page)=>void}) { return <main className="sr-content"><SectionHeader eyebrow="One operating layer" title="Connected Intelligence" description="See how one signal becomes coordinated action across the resort." action={<button className="sr-button" onClick={()=>setPage("decisions")}>Open Intelligence Center <ArrowRight size={14}/></button>}/><div className="sr-surface sr-graph p-5"><div className="absolute left-5 top-5 flex items-center gap-2"><StatusChip tone="teal" pulse>Live chain</StatusChip><span className="sr-dim text-[10px]">Triggered {demo.connected?"just now":"3 min ago"}</span></div><div className="sr-graph-line" style={{left:"22%",top:"49%",width:"54%",transform:"rotate(-15deg)"}}/><div className="sr-graph-line" style={{left:"22%",top:"50%",width:"54%",transform:"rotate(15deg)"}}/><div className="sr-graph-line" style={{left:"23%",top:"50%",width:"54%",transform:"rotate(0deg)"}}/><GraphNode x="15%" y="50%" icon={Wrench} label="Maintenance" active={demo.connected}/><GraphNode x="37%" y="25%" icon={TicketCheck} label="Spa unavailable" active={demo.connected}/><GraphNode x="61%" y="50%" icon={CalendarDays} label="Scheduler" active={demo.connected}/><GraphNode x="37%" y="75%" icon={Sparkles} label="Alternatives" active={demo.connected}/><GraphNode x="85%" y="50%" icon={Bot} label="Concierge" active={demo.connected}/><div className="absolute bottom-5 left-5 text-[10px] text-[#6f8983]">A single source of truth · explainable by design</div></div><div className="mt-5 grid gap-5 lg:grid-cols-[.8fr_1.2fr]"><div className="sr-surface p-5"><div className="sr-kicker">Chain summary</div><h2 className="mt-2 font-serif text-[23px]">Maintenance → guest outcome</h2><div className="mt-5 space-y-4">{([{n:"01",t:"Maintenance",d:"Spa maintenance event detected",tone:"red",icon:Wrench},{n:"02",t:"Scheduler",d:"Paused offers + recalculated queue",tone:"amber",icon:CalendarDays},{n:"03",t:"Alternatives",d:"Matched 3 context-aware options",tone:"teal",icon:Sparkles},{n:"04",t:"Concierge",d:"Guest-facing next step ready",tone:"blue",icon:Bot}] as {n:string;t:string;d:string;tone:string;icon:any}[]).map((item)=><div key={item.n} className="flex gap-3"><div className="font-mono text-[10px] text-[#66817b]">{item.n}</div><div className={`mt-0.5 rounded-md p-1.5 ${item.tone==="red"?"bg-[#d95f58]/10 text-[#ef9a8e]":item.tone==="amber"?"bg-[#e0ac53]/10 text-[#e9bc73]":item.tone==="blue"?"bg-[#609bd8]/10 text-[#a9c9e9]":"bg-[#65b899]/10 text-[#8fd6c2]"}`}><Icon icon={item.icon} size={13}/></div><div><div className="text-xs font-semibold">{item.t}</div><div className="sr-muted mt-1 text-[10px]">{item.d}</div></div></div>)}</div></div><div className="sr-surface p-5"><div className="flex items-center justify-between"><div><div className="sr-kicker">Decision trace</div><h2 className="mt-2 font-serif text-[23px]">What the system did</h2></div><StatusChip tone="teal">Explainable</StatusChip></div><div className="mt-5 grid gap-3 md:grid-cols-3"><div className="sr-surface-soft p-4"><div className="sr-label">Guest impact</div><div className="mt-2 text-lg font-semibold text-[#8fd6c2]">Session activity only</div><div className="sr-muted mt-1 text-[10px]">Experience preserved</div></div><div className="sr-surface-soft p-4"><div className="sr-label">Time to react</div><div className="mt-2 text-lg font-semibold">Session event</div><div className="sr-muted mt-1 text-[10px]">From signal to action</div></div><div className="sr-surface-soft p-4"><div className="sr-label">Confidence</div><div className="mt-2 text-lg font-semibold text-[#8fd6c2]">Analyzer output</div><div className="sr-muted mt-1 text-[10px]">Recommendation fit</div></div></div><button className="sr-button sr-button-secondary mt-5" onClick={()=>setPage("decisions")}><Activity size={14}/> See all actions in decision stream</button></div></div></main>; }
+function Connected({demo,setPage}:{demo:DemoState;setPage:(p:Page)=>void}) { return <main className="sr-content"><SectionHeader eyebrow="One operating layer" title="Connected Intelligence" description="See how one signal becomes coordinated action across the resort." action={<button className="sr-button" onClick={()=>setPage("decisions")}>Open Intelligence Center <ArrowRight size={14}/></button>}/><div className="sr-surface sr-graph p-5"><div className="absolute left-5 top-5 flex items-center gap-2"><StatusChip tone="teal" pulse>Live chain</StatusChip><span className="sr-dim text-[10px]">Triggered {demo.connected?"just now":"3 min ago"}</span></div><div className="sr-graph-line" style={{left:"22%",top:"49%",width:"54%",transform:"rotate(-15deg)"}}/><div className="sr-graph-line" style={{left:"22%",top:"50%",width:"54%",transform:"rotate(15deg)"}}/><div className="sr-graph-line" style={{left:"23%",top:"50%",width:"54%",transform:"rotate(0deg)"}}/><GraphNode x="15%" y="50%" icon={Wrench} label="Maintenance" active={demo.connected}/><GraphNode x="37%" y="25%" icon={TicketCheck} label="Spa unavailable" active={demo.connected}/><GraphNode x="61%" y="50%" icon={CalendarDays} label="Scheduler" active={demo.connected}/><GraphNode x="37%" y="75%" icon={Sparkles} label="Alternatives" active={demo.connected}/><GraphNode x="85%" y="50%" icon={Bot} label="Concierge" active={demo.connected}/><div className="absolute bottom-5 left-5 text-[10px] text-[#6f8983]">A single source of truth · explainable by design</div></div><div className="mt-5 grid gap-5 lg:grid-cols-[.8fr_1.2fr]"><div className="sr-surface p-5"><div className="sr-kicker">Chain summary</div><h2 className="mt-2 font-serif text-[23px]">Maintenance → guest outcome</h2><div className="mt-5 space-y-4">{([{n:"01",t:"Maintenance",d:"Spa maintenance event detected",tone:"red",icon:Wrench},{n:"02",t:"Scheduler",d:"Paused offers + recalculated queue",tone:"amber",icon:CalendarDays},{n:"03",t:"Alternatives",d:"Matched 3 context-aware options",tone:"teal",icon:Sparkles},{n:"04",t:"Concierge",d:"Guest-facing next step ready",tone:"blue",icon:Bot}] as {n:string;t:string;d:string;tone:string;icon:any}[]).map((item)=><div key={item.n} className="flex gap-3"><div className="font-mono text-[10px] text-[#66817b]">{item.n}</div><div className={`mt-0.5 rounded-md p-1.5 ${item.tone==="red"?"bg-[#d95f58]/10 text-[#ef9a8e]" : item.tone==="amber"?"bg-[#e0ac53]/10 text-[#e9bc73]":item.tone==="blue"?"bg-[#609bd8]/10 text-[#a9c9e9]":"bg-[#65b899]/10 text-[#8fd6c2]"}`}><Icon icon={item.icon} size={13}/></div><div><div className="text-xs font-semibold">{item.t}</div><div className="sr-muted mt-1 text-[10px]">{item.d}</div></div></div>)}</div></div><div className="sr-surface p-5"><div className="flex items-center justify-between"><div><div className="sr-kicker">Decision trace</div><h2 className="mt-2 font-serif text-[23px]">What the system did</h2></div><StatusChip tone="teal">Explainable</StatusChip></div><div className="mt-5 grid gap-3 md:grid-cols-3"><div className="sr-surface-soft p-4"><div className="sr-label">Guest impact</div><div className="mt-2 text-lg font-semibold text-[#8fd6c2]">Session activity only</div><div className="sr-muted mt-1 text-[10px]">Experience preserved</div></div><div className="sr-surface-soft p-4"><div className="sr-label">Time to react</div><div className="mt-2 text-lg font-semibold">Session event</div><div className="sr-muted mt-1 text-[10px]">From signal to action</div></div><div className="sr-surface-soft p-4"><div className="sr-label">Confidence</div><div className="mt-2 text-lg font-semibold text-[#8fd6c2]">Analyzer output</div><div className="sr-muted mt-1 text-[10px]">Recommendation fit</div></div></div><button className="sr-button sr-button-secondary mt-5" onClick={()=>setPage("decisions")}><Activity size={14}/> See all actions in decision stream</button></div></div></main>; }
 function GraphNode({x,y,icon,label,active}:{x:string;y:string;icon:any;label:string;active?:boolean}) { return <div className={`sr-node ${active?"active":""}`} style={{left:x,top:y}}><div className="sr-node-dot"><Icon icon={icon} size={18}/></div><div className="sr-node-label">{label}</div></div>; }
 
 function Forecast({setPage}:{setPage:(p:Page)=>void}) { return <main className="sr-content"><SectionHeader eyebrow="Revenue intelligence" title="Forecast & Pricing" description="A calm view of demand, pricing signals and staffing pressure." action={<button className="sr-button sr-button-secondary" onClick={()=>toast("Forecast export prepared")}><Download size={14}/> Export view</button>}/><div className="sr-grid sr-grid-3"><Stat label="7-day demand" value="High" delta="Weekend peak Friday" tone="amber" icon={TrendingUp}/><Stat label="Rate opportunity" value="+8.5%" delta="Recommended Fri–Sat" icon={CreditCard}/><Stat label="Staff pressure" value="Moderate" delta="Housekeeping +1 shift" tone="blue" icon={Users}/></div><div className="sr-surface mt-5 p-5"><div className="flex items-center justify-between"><div><div className="sr-kicker">Occupancy intelligence</div><h2 className="mt-2 font-serif text-[23px]">Forecast connections</h2></div><div className="flex gap-2"><StatusChip>Actual</StatusChip><StatusChip tone="blue">Forecast</StatusChip></div></div><div className="mt-8 flex items-end gap-2" style={{height:250}}>{[56,60,66,71,76,84,88,91,86,80,75,82,90,95,98,92,87,84,89,93,96].map((v,i)=><div className="relative flex h-full flex-1 items-end" key={i}><div className={`w-full rounded-t ${i>10?"bg-[#5e8ca0]/70":"bg-[#70bda5]"}`} style={{height:`${v}%`}}/><div className="absolute bottom-[-25px] left-1/2 -translate-x-1/2 text-[9px] text-[#718a85]">{i%3===0?`D${i+1}`:""}</div></div>)}</div><div className="mt-10 grid gap-3 md:grid-cols-3"><div className="sr-surface-soft p-4"><div className="sr-label">Fri · 28 Sep</div><div className="mt-2 text-xl font-semibold">93.4%</div><div className="mt-1 text-[10px] text-[#e9bc73]">Demand spike detected</div></div><div className="sr-surface-soft p-4"><div className="sr-label">Pricing recommendation</div><div className="mt-2 text-xl font-semibold">Pending backend data</div><div className="mt-1 text-[10px] text-[#8fd6c2]">Avg. daily rate · +8.5%</div></div><div className="sr-surface-soft p-4"><div className="sr-label">Sentiment</div><div className="mt-2 text-xl font-semibold">4.8 / 5</div><div className="mt-1 text-[10px] text-[#a9c9e9]">No quality trade-off forecast</div></div></div></div></main>; }
@@ -3145,6 +3675,7 @@ export default function Home() {
       case "concierge":return <Concierge demo={demo} setDemo={setDemo} setPage={setPage}/>;
       case "amenities":return <GuestAmenities setPage={setPage}/>;
       case "amenity-detail":return <GuestAmenityDetail setPage={setPage} demo={demo}/>;
+      case "reservations":return <GuestMyReservations setPage={setPage}/>;
       case "waitlist":return <GuestReservations setPage={setPage} demo={demo} setDemo={setDemo}/>;
       case "offer":return <GuestOffer setPage={setPage} demo={demo} setDemo={setDemo}/>;
       case "buggy":return <GuestBuggy setPage={setPage} demo={demo}/>;
