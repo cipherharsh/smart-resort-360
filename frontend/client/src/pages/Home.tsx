@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import {
   Activity, AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, BarChart3, Bell, BookOpen, Bot, Building2,
   CalendarDays, Check, CheckCircle2, ChevronDown, CircleDollarSign, CircleHelp, Clock3, Cloud, CloudRain, CloudSun,
-  Command, ConciergeBell, Cpu, CreditCard, DoorOpen, Download, Droplets, Gauge, GitBranch, Home as HomeIcon, Hotel,
+  Coffee, Command, ConciergeBell, Cpu, CreditCard, DoorOpen, Download, Droplets, Gauge, GitBranch, Home as HomeIcon, Hotel,
   KeyRound, Layers3, LifeBuoy, ListFilter, LogOut, MapPin, Menu, MessageCircle, MoreHorizontal, Navigation,
   PackageCheck, PanelLeft, Pause, Phone, Play, Plus, Radio, Network, Receipt, RefreshCw, Search, Send, Settings, ShieldAlert, Sparkles,
   Sun, Target, Thermometer, TicketCheck, Timer, TrendingUp, UserRound, Users, Utensils, Wine, Wind, Wrench, X, Zap
@@ -1210,12 +1210,344 @@ function BarMenuModal({ onClose, onReserve }: { onClose: () => void; onReserve: 
   );
 }
 
+function VerandahMenuModal({ onClose, onReserve }: { onClose: () => void; onReserve: () => void }) {
+  const [activePage, setActivePage] = useState<1 | 2 | 3 | 4>(1);
+
+  const page1Items = [
+    {
+      name: "Eggs Benedict with Black Truffle Hollandaise",
+      tag: "👑 Breakfast Signature",
+      price: "₹620",
+      type: "Artisan Breakfast",
+      desc: "Free-range poached farm eggs on warm toasted brioche with smoked turkey ham, sautéed spinach, velvety black truffle hollandaise, and herbed potato rosti."
+    },
+    {
+      name: "Avocado & Pugliese Burrata Sourdough Toast",
+      tag: "🥑 Healthy Gourmet",
+      price: "₹580",
+      type: "Artisan Breakfast",
+      desc: "Fresh Hass avocado mash, artisanal Italian pugliese burrata, blistered heirloom cherry tomatoes, toasted pine nuts, and pomegranate balsamic drizzle on toasted sourdough."
+    },
+    {
+      name: "Belgian Malted Waffles & Wild Berry Compote",
+      tag: "🧇 Morning Sweet",
+      price: "₹480",
+      type: "Bakery & Waffles",
+      desc: "Golden crisp malted Belgian waffles served with warm forest blueberry-maple reduction, churned Madagascar vanilla butter, and fresh mint."
+    },
+    {
+      name: "Single-Estate Kalledevarapura Arabica Flat White",
+      tag: "☕ Single Origin",
+      price: "₹280",
+      type: "Artisan Coffee Bar",
+      desc: "Locally sourced high-altitude Chikmagalur shade-grown arabica extracted through a Synesso espresso machine with silken micro-foam."
+    },
+    {
+      name: "Cold Brew Tonic with Orange Blossom & Thyme",
+      tag: "✨ Signature Brew",
+      price: "₹320",
+      type: "Artisan Coffee Bar",
+      desc: "18-hour cold steeped single-origin arabica poured over Indian artisanal tonic water, infused with natural orange blossom and fresh garden thyme."
+    },
+    {
+      name: "Warm Almond Frangipane Croissant Basket (2-pc)",
+      tag: "🥐 Viennoiserie",
+      price: "₹350",
+      type: "French Bakery",
+      desc: "Flaky double-baked French butter croissant filled with rich almond frangipane cream and toasted sliced California almonds."
+    }
+  ];
+
+  const page2Items = [
+    {
+      name: "Pizza Burrata & San Marzano Margherita D.O.P.",
+      tag: "🔥 Woodfired Pizza",
+      price: "₹790",
+      type: "Neapolitan Pizza",
+      desc: "48-hour fermented slow-rise sourdough crust baked at 480°C with San Marzano DOP tomato passata, fior di latte, fresh artisanal baby burrata crown, and wild sweet basil."
+    },
+    {
+      name: "Wild Porcini & Truffle Four-Cheese Pizza",
+      tag: "🍄 Chef's Woodfired",
+      price: "₹880",
+      type: "Neapolitan Pizza",
+      desc: "White base with fior di latte, Gorgonzola Dolce, fontina, smoked scamorza, sautéed wild porcini mushrooms, and a delicate white truffle oil drizzle."
+    },
+    {
+      name: "Artisanal Pork Pepperoni & Hot Chili Honey Pizza",
+      tag: "🍕 House Favorite",
+      price: "₹940",
+      type: "Neapolitan Pizza",
+      desc: "Smoky cured artisanal pork pepperoni, mozzarella di bufala, crushed red chili flakes, finished straight from the wood oven with hot spicy wildflower honey."
+    },
+    {
+      name: "Handmade Truffle Tagliolini Cacio e Pepe",
+      tag: "🍝 Handcrafted Pasta",
+      price: "₹760",
+      type: "Fresh Pasta",
+      desc: "Fresh bronze-die cut egg tagliolini tossed in emulsified 24-month aged Pecorino Romano broth, cracked Sarawak black peppercorns, and freshly shaved black truffle."
+    },
+    {
+      name: "8-Hour Slow-Braised Lamb Shoulder Pappardelle",
+      tag: "🍖 Traditional Ragu",
+      price: "₹860",
+      type: "Fresh Pasta",
+      desc: "Hand-cut wide ribbon pappardelle tossed in a rich slow-simmered Australian lamb shoulder ragu with Chianti wine, rosemary, and aged Parmigiano-Reggiano."
+    },
+    {
+      name: "Spinach & Ricotta Ravioli in Hazelnut Sage Butter",
+      tag: "🌿 Handmade Vegetarian",
+      price: "₹720",
+      type: "Fresh Pasta",
+      desc: "Pillow-soft egg ravioli filled with creamy buffalo ricotta and organic baby spinach, pan-glazed in brown butter, toasted hazelnuts, and crispy garden sage."
+    }
+  ];
+
+  const page3Items = [
+    {
+      name: "Peri-Peri Spatchcock Baby Chicken (Live Grill)",
+      tag: "🔥 Charcoal Rotisserie",
+      price: "₹820",
+      type: "Live Charcoal Grill",
+      desc: "Tender whole spatchcock baby chicken flame-grilled over coconut charcoal with African bird's eye peri-peri glaze, charred lemon, and garlic herb potato wedges."
+    },
+    {
+      name: "Rosemary & Garlic Infused Charcoal Lamb Chops",
+      tag: "🥩 Prime Cuts",
+      price: "₹1,250",
+      type: "Live Charcoal Grill",
+      desc: "Prime New Zealand lamb chops seared over live hardwood charcoal, served with roasted garlic baby potatoes, confit shallots, and rich rosemary red wine jus."
+    },
+    {
+      name: "Pan-Grilled Wild Norwegian Salmon Steak",
+      tag: "🐟 Atlantic Catch",
+      price: "₹1,380",
+      type: "Live Charcoal Grill",
+      desc: "Crisp-skin Norwegian salmon steak with char-grilled asparagus spears, lemon-dill emulsion, and saffron buttered parsnip purée."
+    },
+    {
+      name: "Tandoori Malai Paneer Tikka Angare",
+      tag: "🍢 Clay Oven Tandoor",
+      price: "₹590",
+      type: "Indian Clay Oven",
+      desc: "Soft cottage cheese chunks infused with cold-pressed mustard oil, hung curd, and deghi chili marinade, roasted over smoking tandoor charcoal with spiced bell peppers."
+    },
+    {
+      name: "Awadhi Murgh Malai Tikka with Saffron Laccha",
+      tag: "🍗 Royal Tandoor",
+      price: "₹690",
+      type: "Indian Clay Oven",
+      desc: "Boneless chicken thigh steeped in cardamom-scented cashew nut cream and royal Indian spices, flame-roasted in charcoal tandoor with mint chutney."
+    },
+    {
+      name: "Charred Harissa Arabian Tiger Prawn Skewers (4-pc)",
+      tag: "🦀 Coastal Robata",
+      price: "₹1,050",
+      type: "Live Charcoal Grill",
+      desc: "Jumbo Arabian Sea tiger prawns brushed with smoked harissa paste and garlic butter, served with cucumber mint labneh and warm charred flatbread."
+    }
+  ];
+
+  const page4Items = [
+    {
+      name: "Grand International Morning Buffet",
+      tag: "🍳 All-Inclusive Breakfast",
+      price: "₹1,100 / guest",
+      type: "Grand Buffet",
+      desc: "Expansive breakfast spread: live egg & omelette station, South Indian dosa/idli bar, French bakery & pastries, tropical fruit cart, charcuterie, and limitless artisan coffee."
+    },
+    {
+      name: "Verandah Live Grills & Gourmet Dinner Buffet",
+      tag: "👑 Royal Evening Spread",
+      price: "₹1,800 / guest",
+      type: "Grand Buffet",
+      desc: "Lavish multi-cuisine dinner: live charcoal grill counters, woodfired Neapolitan pizzas, sushi & dim sum bar, Indian curries, European carved roasts, and grand dessert boulevard."
+    },
+    {
+      name: "Bronte Pistachio & Tahitian Vanilla Artisan Gelato",
+      tag: "🍨 Fresh Italian Gelato",
+      price: "₹360",
+      type: "Artisan Desserts",
+      desc: "Two generous scoops of house-churned artisanal Italian gelato featuring Sicilian Bronte pistachios and Tahitian vanilla bean with waffle crisps."
+    },
+    {
+      name: "Warm 70% Dark Chocolate Lava Fondant",
+      tag: "🍫 Warm Dessert",
+      price: "₹460",
+      type: "Artisan Desserts",
+      desc: "Warm molten Belgian Valrhona dark chocolate cake with a liquid core, served with sea salt caramel gelato and berry coulis."
+    },
+    {
+      name: "Classic Italian Tiramisu al Mascarpone",
+      tag: "☕ Italian Heritage",
+      price: "₹440",
+      type: "Artisan Desserts",
+      desc: "Savoiardi sponge ladyfingers steeped in Kalledevarapura espresso and aged Marsala, layered with whipped Italian mascarpone and dusted with cocoa."
+    },
+    {
+      name: "Rose & Cardamom Saffron Rasmalai Tres Leches",
+      tag: "✨ Indian Fusion",
+      price: "₹420",
+      type: "Artisan Desserts",
+      desc: "Light saffron sponge cake soaked in three-milk cardamom-saffron reduction, garnished with soft rasmalai pearls, silver leaf, and organic rose petals."
+    }
+  ];
+
+  const pageMap = {
+    1: { title: "☕ Page 1: Artisan Breakfast, Single-Origin Coffee & Bakery", items: page1Items, subtitle: "Farm Poached Eggs, Sourdough Toasts, Viennoiserie & Speciality Espresso" },
+    2: { title: "🍕 Page 2: Woodfired Neapolitan Pizzas & Handcrafted Pastas", items: page2Items, subtitle: "48-Hour Sourdough Crusts, Fresh Tagliolini, Ravioli & Slow-Braised Ragu" },
+    3: { title: "🔥 Page 3: Live Charcoal Grills, Rotisserie & Clay Oven Tandoor", items: page3Items, subtitle: "Peri-Peri Baby Chicken, Prime Lamb Chops, Salmon & Awadhi Tikka" },
+    4: { title: "🍽️ Page 4: Grand International Buffets & Artisan Gelato", items: page4Items, subtitle: "All-Day Breakfast & Dinner Buffets, Molten Fondant & Classic Tiramisu" }
+  };
+
+  const currentPageData = pageMap[activePage];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in" onClick={onClose}>
+      <div className="relative flex flex-col w-full max-w-2xl max-h-[92vh] overflow-hidden rounded-3xl border border-[#d5b582]/40 bg-[#122020] text-[#ebe7dc] shadow-2xl" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="border-b border-[#d5b582]/20 bg-gradient-to-r from-[#1a2927] via-[#243936] to-[#1a2927] p-5">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#d5b582]/15 text-[#d5b582] border border-[#d5b582]/30 shadow-inner">
+                <Coffee size={22} />
+              </div>
+              <div>
+                <span className="rounded-md bg-[#d5b582]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#d5b582]">
+                  All-Day Multi-Cuisine Menu (4-Pages)
+                </span>
+                <h2 className="mt-1 font-serif text-2xl font-semibold text-[#fcf5e8]">The Verandah All-Day Brasserie & Cafe</h2>
+                <div className="mt-1 flex items-center gap-3 text-xs text-[#8ca6a1]">
+                  <span>📍 Main Courtyard Ground Floor</span>
+                  <span>·</span>
+                  <span>⏰ Open 24/7</span>
+                  <span>·</span>
+                  <span className="text-[#d5b582]">Woodfired & Live Charcoal Grills</span>
+                </div>
+              </div>
+            </div>
+            <button className="grid h-8 w-8 place-items-center rounded-full bg-white/5 text-[#8ca6a1] hover:bg-white/10 hover:text-white" onClick={onClose}>
+              ✕
+            </button>
+          </div>
+
+          {/* 4-Page Navigation Tabs */}
+          <div className="mt-4 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {[
+              { p: 1, label: "☕ Breakfast & Coffee" },
+              { p: 2, label: "🍕 Pizzas & Pastas" },
+              { p: 3, label: "🔥 Live Grills & Tandoor" },
+              { p: 4, label: "🍽️ Buffets & Desserts" }
+            ].map(({ p, label }) => (
+              <button
+                key={p}
+                onClick={() => setActivePage(p as any)}
+                className={`shrink-0 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${
+                  activePage === p
+                    ? "bg-[#d5b582] text-[#122020] shadow-md font-bold"
+                    : "border border-white/8 bg-black/30 text-[#8ca6a1] hover:text-[#ebe7dc] hover:bg-white/5"
+                }`}
+              >
+                <span>P{p}: {label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Menu Items Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-3.5 scrollbar-thin">
+          <div className="flex items-center justify-between pb-1 border-b border-white/5">
+            <div>
+              <div className="text-xs uppercase tracking-wider text-[#d5b582] font-semibold">
+                {currentPageData.title}
+              </div>
+              <div className="text-[11px] text-[#8ca6a1] mt-0.5">{currentPageData.subtitle}</div>
+            </div>
+            <span className="text-[10px] text-[#8ca6a1] font-mono">Page {activePage}/4</span>
+          </div>
+
+          {currentPageData.items.map((item, idx) => (
+            <div
+              key={idx}
+              className="group relative rounded-2xl border border-white/8 bg-white/[.025] p-4 transition-all hover:border-[#d5b582]/40 hover:bg-white/[.05]"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded bg-[#d5b582]/15 px-2 py-0.5 text-[10px] font-bold text-[#d5b582]">
+                      {item.tag}
+                    </span>
+                    <span className="text-[10px] text-[#8ca6a1] font-mono">[{item.type}]</span>
+                  </div>
+                  <h3 className="mt-1.5 font-serif text-base font-semibold text-[#fcf5e8] group-hover:text-[#d5b582] transition-colors">
+                    {item.name}
+                  </h3>
+                  <p className="sr-muted mt-1 text-xs leading-relaxed">{item.desc}</p>
+                </div>
+                <div className="flex flex-col items-end shrink-0">
+                  <span className="font-mono text-base font-bold text-[#d5b582]">{item.price}</span>
+                  <button
+                    onClick={() => {
+                      toast.success(`Selected for Table: ${item.name}`, {
+                        description: `Price: ${item.price} · Added to Brasserie preference`
+                      });
+                    }}
+                    className="mt-2 rounded-md bg-white/5 px-2 py-1 text-[10px] font-medium text-[#c4ded6] hover:bg-[#d5b582]/20 hover:text-[#d5b582]"
+                  >
+                    + Note for Table
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer with 4-Page Slider Controls & Action */}
+        <div className="border-t border-[#d5b582]/20 bg-[#162928] p-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <button
+              disabled={activePage === 1}
+              onClick={() => setActivePage((p) => Math.max(1, p - 1) as any)}
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold disabled:opacity-30 hover:bg-white/5"
+            >
+              ← Prev
+            </button>
+            <span className="font-mono text-xs text-[#d5b582]">Page {activePage} of 4</span>
+            <button
+              disabled={activePage === 4}
+              onClick={() => setActivePage((p) => Math.min(4, p + 1) as any)}
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold disabled:opacity-30 hover:bg-white/5"
+            >
+              Next →
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="sr-button-quiet text-xs" onClick={onClose}>
+              Close Menu
+            </button>
+            <button
+              className="sr-button"
+              onClick={() => {
+                onClose();
+                onReserve();
+              }}
+            >
+              Reserve Table For This Menu <ArrowRight size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
   const { weather } = useLiveWeather();
   const [selectedCategory, setSelectedCategory] = useState<"All" | "Food & Drinks" | "Indoor Games" | "Outdoor Games" | "Wellness">("All");
   const [bookingItem, setBookingItem] = useState<any>(null);
   const [showCoveMenu, setShowCoveMenu] = useState<boolean>(false);
   const [showBarMenu, setShowBarMenu] = useState<boolean>(false);
+  const [showVerandahMenu, setShowVerandahMenu] = useState<boolean>(false);
 
   const foodAndDrinks = [
     {
@@ -1537,6 +1869,15 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
                                 <span>View Bar Menu</span>
                               </button>
                             )}
+                            {item.id === "brasserie-1" && (
+                              <button
+                                className="flex items-center gap-1.5 rounded-lg border border-[#d5b582]/40 bg-white/[.04] px-2.5 py-1 text-[11px] font-semibold text-[#fcf5e8] transition-all hover:bg-white/[.09] hover:border-[#d5b582] shadow-sm"
+                                onClick={() => setShowVerandahMenu(true)}
+                              >
+                                <Coffee size={12} className="text-[#d5b582]" />
+                                <span>View Menu</span>
+                              </button>
+                            )}
                             <button
                               className="rounded-lg bg-[#d5b582]/15 px-3 py-1 text-[11px] font-semibold text-[#d5b582] transition-colors hover:bg-[#d5b582] hover:text-[#122020]"
                               onClick={() => setBookingItem(item)}
@@ -1738,6 +2079,15 @@ function GuestAmenities({setPage}:{setPage:(p:Page)=>void}) {
           onReserve={() => {
             setShowBarMenu(false);
             setBookingItem(foodAndDrinks[1]);
+          }}
+        />
+      )}
+      {showVerandahMenu && (
+        <VerandahMenuModal
+          onClose={() => setShowVerandahMenu(false)}
+          onReserve={() => {
+            setShowVerandahMenu(false);
+            setBookingItem(foodAndDrinks.find(f => f.id === "brasserie-1") || foodAndDrinks[2]);
           }}
         />
       )}
