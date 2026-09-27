@@ -130,14 +130,14 @@ function Entry({onEnter}:{onEnter:()=>void}) {
 
   const activeHero = RESORT_HERO_IMAGES[imgIndex];
 
-  // Automatically cycle to the next hero image every 2.8 seconds with silky smooth crossfade
+  // Automatically cycle to the next hero image every 2.5 seconds with silky smooth synced crossfade
   useEffect(() => {
     const timer = setInterval(() => {
       setImgIndex((current) => {
         setPrevIndex(current);
         return (current + 1) % RESORT_HERO_IMAGES.length;
       });
-    }, 2800);
+    }, 2500);
     return () => clearInterval(timer);
   }, []);
 
@@ -164,9 +164,9 @@ function Entry({onEnter}:{onEnter:()=>void}) {
             className="absolute inset-0 h-full w-full object-cover"
             style={{
               filter: "saturate(1.02) contrast(1.02) brightness(0.96)",
-              opacity: isCurrent ? 1 : isPrevious ? 1 : 0,
+              opacity: isCurrent ? 1 : 0,
               zIndex: isCurrent ? 2 : isPrevious ? 1 : 0,
-              transition: "opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1)",
+              transition: "opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)",
               transform: "translateZ(0)",
               willChange: isVisible ? "opacity" : "auto",
               pointerEvents: "none"
@@ -209,9 +209,32 @@ function Entry({onEnter}:{onEnter:()=>void}) {
           <StatusChip tone="teal"><span className="text-xs font-bold text-white tracking-wide">Live environment</span></StatusChip>
           <span className="font-mono text-xs font-bold text-white/90 drop-shadow">v0.9.4</span>
         </div>
-        <p key={activeHero.title} className="mt-4 font-serif text-[23px] leading-tight text-white font-semibold drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] animate-in fade-in duration-500">
-          {activeHero.title}
-        </p>
+        <div className="relative mt-4 min-h-[58px]">
+          {RESORT_HERO_IMAGES.map((hero, idx) => {
+            const isCurrent = idx === imgIndex;
+            const isPrevious = idx === prevIndex && prevIndex !== imgIndex;
+            const isVisible = isCurrent || isPrevious;
+            if (!isVisible) return null;
+
+            return (
+              <p
+                key={hero.title}
+                className={`font-serif text-[23px] leading-tight text-white font-semibold drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] ${
+                  isCurrent ? "relative" : "absolute inset-0"
+                }`}
+                style={{
+                  opacity: isCurrent ? 1 : 0,
+                  transform: isCurrent ? "translateY(0)" : "translateY(-4px)",
+                  transition: "opacity 800ms cubic-bezier(0.4, 0, 0.2, 1), transform 800ms cubic-bezier(0.4, 0, 0.2, 1)",
+                  willChange: "opacity, transform",
+                  pointerEvents: isCurrent ? "auto" : "none",
+                }}
+              >
+                {hero.title}
+              </p>
+            );
+          })}
+        </div>
       </div>
     </div>
   </div>;
